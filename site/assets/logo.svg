@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="ReSurface mark: stacked surfaces forming an R">
+  <!-- back surface: cobalt -->
+  <rect x="20" y="2" width="40" height="40" rx="7" fill="#0B57F0"/>
+  <!-- middle surface -->
+  <rect x="12" y="10" width="40" height="40" rx="7" fill="#FFFFFF" stroke="#181818" stroke-width="3"/>
+  <!-- front surface -->
+  <rect x="2" y="18" width="44" height="44" rx="8" fill="#FFFFFF" stroke="#181818" stroke-width="4"/>
+  <!-- the R, squared geometry -->
+  <path fill="#181818" fill-rule="evenodd" d="M13 28 H29.5 A9.5 9.5 0 0 1 39 37.5 A9.5 9.5 0 0 1 32.8 46.4 L38.8 54 H30.2 L24.8 47 H20 V54 H13 Z M20 34 V41 H28.5 A3.5 3.5 0 0 0 28.5 34 Z"/>
+</svg>

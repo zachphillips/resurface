@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Braised chicken — 5.83in e-ink panel, 648×480, 1-bit</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700;800&family=Archivo+Black&family=Archivo+Narrow:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     Surface: eink-fridge — 5.83" panel, 648×480 px (~138 PPI),
+     strict 1-bit, mounted LANDSCAPE on the fridge (orientation
+     locked — answered in the decision record).
+     Decision record: ../../decisions/eink-fridge.md
+     Two reading distances:
+       1.5 m glance  → temp + time block, ≥9 mm caps
+       0.6 m read    → steps at ≥2.7 mm x-height (19px Archivo)
+     No grays anywhere. 1 CSS px = 1 panel px.
+     Proof: chromium --screenshot --window-size=648,480
+            magick -threshold 55% -depth 1
+     ============================================================ */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 648px; height: 480px; overflow: hidden; }
+  body {
+    background: #fff; color: #000;
+    font-family: "Archivo", sans-serif;
+    display: flex;
+    -webkit-font-smoothing: none;
+  }
+
+  /* ------- left: title, T1 block, steps (456px) ------- */
+  .main { width: 456px; height: 480px; padding: 14px 14px 10px 16px; display: flex; flex-direction: column; }
+
+  h1 {
+    font-size: 19px; font-weight: 800; letter-spacing: 0.04em;
+    text-transform: uppercase; white-space: nowrap;
+    border-bottom: 3px solid #000; padding-bottom: 7px;
+  }
+
+  /* T1: the two facts a cook needs at 1.5 m with wet hands */
+  .vitals { display: flex; align-items: center; gap: 16px; padding: 8px 0 6px; border-bottom: 3px solid #000; }
+  .temp {
+    font-family: "Archivo Black", "Archivo", sans-serif;
+    font-size: 84px; line-height: 0.95; letter-spacing: -0.02em;
+  }
+  .temp sup { font-size: 38px; vertical-align: 38px; letter-spacing: 0; }
+  .vdiv { width: 4px; height: 76px; background: #000; }
+  .time .big { font-family: "Archivo Black", "Archivo", sans-serif; font-size: 40px; line-height: 1; }
+  .time .sub { font-size: 14px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 5px; }
+
+  /* steps: ≤8, imperative, verb-first */
+  ol { list-style: none; flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding-top: 9px; }
+  li { display: flex; gap: 10px; align-items: flex-start; }
+  .n {
+    flex: 0 0 24px; height: 24px; background: #000; color: #fff;
+    font-weight: 800; font-size: 15px; line-height: 24px; text-align: center;
+    margin-top: 1px;
+  }
+  .s { font-size: 18px; line-height: 22px; font-weight: 600; }
+  .s b { font-weight: 800; letter-spacing: 0.03em; }
+
+  /* ------- right: ingredient rail down the RIGHT edge ------- */
+  .rail {
+    width: 192px; height: 480px; border-left: 3px solid #000;
+    display: flex; flex-direction: column;
+  }
+  .rail h2 {
+    background: #000; color: #fff;
+    font-size: 15px; font-weight: 800; letter-spacing: 0.18em;
+    text-transform: uppercase; text-align: center;
+    padding: 9px 0 10px;
+  }
+  ul { list-style: none; flex: 1; display: flex; flex-direction: column; justify-content: space-between; padding: 8px 10px 10px 12px; }
+  ul li { display: flex; gap: 8px; align-items: flex-start; }
+  .box { flex: 0 0 12px; height: 12px; border: 2px solid #000; margin-top: 3px; }
+  .ing { font-family: "Archivo Narrow", sans-serif; font-size: 16px; line-height: 18px; font-weight: 500; }
+  .ing b { font-weight: 700; }
+</style>
+</head>
+<body>
+
+  <div class="main">
+    <h1>Chicken · Preserved Lemon · Olives</h1>
+
+    <div class="vitals">
+      <div class="temp">425<sup>°F</sup></div>
+      <div class="vdiv"></div>
+      <div class="time">
+        <div class="big">1¼ HR</div>
+        <div class="sub">total · serves 4</div>
+      </div>
+    </div>
+
+    <ol>
+      <li><span class="n">1</span><span class="s"><b>SALT</b> thighs. Rest 30 min, or overnight.</span></li>
+      <li><span class="n">2</span><span class="s"><b>SEAR</b> skin-down, cold dry pan, 7–8 min. Don't move them.</span></li>
+      <li><span class="n">3</span><span class="s"><b>FLIP</b> 2 min; set aside. Keep 2 tbsp fat.</span></li>
+      <li><span class="n">4</span><span class="s"><b>SOFTEN</b> onion 5 min; garlic + spices 1 min.</span></li>
+      <li><span class="n">5</span><span class="s"><b>ADD</b> stock, lemon, olives — scrape the brown bits free.</span></li>
+      <li><span class="n">6</span><span class="s"><b>NESTLE</b> thighs skin-up, above the liquid.</span></li>
+      <li><span class="n">7</span><span class="s"><b>OVEN</b> uncovered 40–45 min, till mahogany.</span></li>
+      <li><span class="n">8</span><span class="s"><b>REST</b> 10 min. Parsley over; bread for the juices.</span></li>
+    </ol>
+  </div>
+
+  <div class="rail">
+    <h2>Ingredients</h2>
+    <ul>
+      <li><span class="box"></span><span class="ing"><b>8 chicken thighs</b> bone-in, skin-on</span></li>
+      <li><span class="box"></span><span class="ing"><b>1 tbsp</b> kosher salt</span></li>
+      <li><span class="box"></span><span class="ing"><b>1 preserved lemon</b> rind only, slivered</span></li>
+      <li><span class="box"></span><span class="ing"><b>1 cup green olives</b> pitted + smashed</span></li>
+      <li><span class="box"></span><span class="ing"><b>1 yellow onion</b> thin half-moons</span></li>
+      <li><span class="box"></span><span class="ing"><b>4 garlic cloves</b> sliced</span></li>
+      <li><span class="box"></span><span class="ing"><b>1½ tsp</b> ground coriander</span></li>
+      <li><span class="box"></span><span class="ing"><b>1 tsp</b> sweet paprika</span></li>
+      <li><span class="box"></span><span class="ing"><b>1½ cups</b> chicken stock</span></li>
+      <li><span class="box"></span><span class="ing"><b>handful parsley</b> chopped</span></li>
+      <li><span class="box"></span><span class="ing"><b>crusty bread</b> for the pan juices</span></li>
+    </ul>
+  </div>
+
+</body>
+</html>

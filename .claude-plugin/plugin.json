@@ -1,0 +1,11 @@
+{
+  "name": "resurface",
+  "description": "Surface-aware publishing for agents: re-design any document, dashboard, or interface — form AND content — for paper, e-ink, thermal printers, index cards, labels, slides, phones, TVs, and terminals, then deliver it there.",
+  "version": "0.1.0",
+  "author": {
+    "name": "Zach Phillips"
+  },
+  "homepage": "https://github.com/zachphillips/resurface",
+  "license": "MIT",
+  "keywords": ["responsive-design", "publishing", "print", "e-ink", "thermal-printer", "skills", "agents"]
+}

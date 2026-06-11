@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Foundry fleet — 58mm thermal strip (384 dots)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     Surface: thermal-receipt, 58mm roll → 384 dots @ 8 dots/mm.
+     Decision record: ../../decisions/thermal-receipt.md
+     1 CSS px = 1 printer dot. Pure #000 on #fff — anything else
+     dithers to mud at 203 DPI. No rule thinner than 2px, no gap
+     finer than 2px, nothing within 16px of a tear line.
+     Rasterize: chromium --headless --screenshot --window-size=384,3000
+                magick -trim -threshold 60% -depth 1
+     ============================================================ */
+  @page { margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { width: 384px; }
+  body {
+    width: 384px; margin: 0; background: #fff; color: #000;
+    font-family: "IBM Plex Mono", monospace;
+    font-size: 16px;             /* ≥16 dots tall — thermal minimum */
+    line-height: 1.3;
+    -webkit-font-smoothing: none;
+    padding: 48px 0 56px;        /* head slack on top, feed-before-cut below */
+  }
+  .pad { padding-left: 10px; padding-right: 10px; }
+
+  /* --- inverted band: the section idiom; solid black is free --- */
+  .band {
+    background: #000; color: #fff;
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 6px 10px 8px;
+    font-weight: 700; letter-spacing: 0.02em;
+  }
+  .band .nm { font-size: 21px; }
+  .band .tag { font-size: 13px; font-weight: 500; }
+
+  /* --- rules: 2px minimum, heavier means more --- */
+  .rule-2 { border: 0; border-top: 2px solid #000; margin: 10px 10px; }
+  .rule-double { border: 0; border-top: 2px solid #000; border-bottom: 2px solid #000; height: 8px; margin: 12px 10px; }
+  .rule-heavy { border: 0; border-top: 6px solid #000; margin: 12px 10px 10px; } /* the DONE/NEXT divide */
+
+  /* --- tear mark: bold dashes for a manual tear bar --- */
+  .tear {
+    height: 4px; margin: 22px 0;   /* ≥16px clearance both sides */
+    background: repeating-linear-gradient(90deg, #000 0 12px, transparent 12px 24px);
+  }
+
+  /* --- items --- */
+  .item { display: flex; justify-content: space-between; gap: 8px; padding: 3px 10px; }
+  .item .t { flex: 1 1 auto; }
+  .item .pr { flex: 0 0 auto; font-size: 13px; padding-top: 3px; }
+  .done .t, .done .pr {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;   /* a 1px strike vanishes in bloom */
+  }
+  .next .t { padding-left: 24px; text-indent: -14px; } /* gray → indent + ? */
+  .next .t::before { content: "? "; font-weight: 700; }
+
+  .run { padding: 4px 10px 0; font-weight: 700; }
+  .run .arr { font-size: 14px; }
+  .sub { padding: 0 10px 2px; font-size: 13px; }
+
+  .sec {
+    padding: 10px 10px 2px; font-size: 13px; font-weight: 700;
+    letter-spacing: 0.18em;
+  }
+
+  /* --- progress: solid black fill, 2px track --- */
+  .bar { margin: 6px 10px 2px; border: 2px solid #000; height: 14px; }
+  .bar .fill { height: 100%; background: #000; }
+
+  /* --- stalled chip: inverted, can't be missed --- */
+  .chip {
+    display: inline-block; background: #000; color: #fff;
+    font-size: 13px; font-weight: 700; letter-spacing: 0.08em;
+    padding: 2px 8px 3px; margin-left: 6px; vertical-align: 1px;
+  }
+
+  .center { text-align: center; }
+  .small { font-size: 13px; }
+  .qr { width: 116px; height: 116px; margin: 8px auto; display: block; } /* 29 modules × 4 dots */
+</style>
+</head>
+<body>
+
+<!-- ================= SEGMENT 0 · MASTHEAD ================= -->
+<div class="band"><span class="nm">FOUNDRY</span><span class="tag">agent fleet</span></div>
+<div class="pad center" style="padding-top:8px">
+  <div style="font-weight:700">OVERNIGHT RUN</div>
+  <div class="small">WED JUN 10 · 23:40 → 06:45</div>
+</div>
+<hr class="rule-double">
+<div class="pad center" style="font-weight:500">
+  4 PROJECTS · 10 MERGED<br>
+  3 RUNNING · 1 STALLED · 7 NEXT
+</div>
+
+<div class="tear"></div>
+
+<!-- ================= SEGMENT 1 · ATLAS-API ================= -->
+<div class="band"><span class="nm">1·ATLAS-API</span><span class="tag">payments</span></div>
+<div class="sec">MERGED OVERNIGHT</div>
+<div class="item done"><span class="t">refund idempotency keys</span><span class="pr">#412</span></div>
+<div class="item done"><span class="t">webhook retry budget</span><span class="pr">#415</span></div>
+<div class="item done"><span class="t">p99 alert at 800 ms</span><span class="pr">#418</span></div>
+<div class="run"><span class="arr">▶</span> ledger IDs → UUIDv7</div>
+<div class="bar"><div class="fill" style="width:62%"></div></div>
+<div class="sub">62% · backfill ETA 09:00</div>
+<hr class="rule-heavy">
+<div class="sec">NEXT — YOUR CALL</div>
+<div class="item next"><span class="t">backfill 2024 invoices</span></div>
+<div class="item next"><span class="t">kill legacy /v1/charges</span></div>
+
+<div class="tear"></div>
+
+<!-- ================= SEGMENT 2 · ORBIT-WEB ================= -->
+<div class="band"><span class="nm">2·ORBIT-WEB</span><span class="tag">storefront</span></div>
+<div class="sec">MERGED OVERNIGHT</div>
+<div class="item done"><span class="t">checkout A/B: ship B +4.1%</span><span class="pr">#209</span></div>
+<div class="item done"><span class="t">bundle 312 kB → 187 kB</span><span class="pr">#213</span></div>
+<div class="run"><span class="arr">▶</span> Safari focus-trap fix</div>
+<div class="sub">PR open · 2 tests still red</div>
+<hr class="rule-heavy">
+<div class="sec">NEXT — YOUR CALL</div>
+<div class="item next"><span class="t">dark-mode token pass</span></div>
+<div class="item next"><span class="t">Enzyme → Playwright</span></div>
+
+<div class="tear"></div>
+
+<!-- ================= SEGMENT 3 · COURIER ================= -->
+<div class="band"><span class="nm">3·COURIER</span><span class="tag">notifications</span></div>
+<div class="sec">MERGED OVERNIGHT</div>
+<div class="item done"><span class="t">DKIM auto-rotation</span><span class="pr">#87</span></div>
+<div class="item done"><span class="t">bounce hooks normalized</span><span class="pr">#91</span></div>
+<div class="item done"><span class="t">digest send 14 m → 90 s</span><span class="pr">#95</span></div>
+<div class="run"><span class="arr">▶</span> template versioning</div>
+<div class="sub">draft PR · review when ready</div>
+<hr class="rule-heavy">
+<div class="sec">NEXT — YOUR CALL</div>
+<div class="item next"><span class="t">per-tenant rate limits</span></div>
+
+<div class="tear"></div>
+
+<!-- ================= SEGMENT 4 · DARKROOM ================= -->
+<div class="band"><span class="nm">4·DARKROOM</span><span class="tag">image pipeline</span></div>
+<div class="sec">MERGED OVERNIGHT</div>
+<div class="item done"><span class="t">HEIC decode path</span><span class="pr">#56</span></div>
+<div class="item done"><span class="t">EXIF orientation fix</span><span class="pr">#58</span></div>
+<div class="run"><span class="arr">▶</span> batch-resize queue<span class="chip">! STALLED</span></div>
+<div class="sub">blocked on S3 perms — needs you</div>
+<hr class="rule-heavy">
+<div class="sec">NEXT — YOUR CALL</div>
+<div class="item next"><span class="t">GPU offload spike</span></div>
+<div class="item next"><span class="t">prune originals &gt; 90 d</span></div>
+
+<div class="tear"></div>
+
+<!-- ================= SEGMENT 5 · ESCAPE HATCH ================= -->
+<div class="pad center" style="font-weight:700; padding-top:4px">LIVE BOARD</div>
+<svg class="qr" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" shape-rendering="crispEdges"><path d="M0 0h7v1H0zM9 0h1v1H9zM11 0h3v1H11zM16 0h1v1H16zM18 0h2v1H18zM22 0h7v1H22zM0 1h1v1H0zM6 1h1v1H6zM8 1h2v1H8zM11 1h2v1H11zM14 1h4v1H14zM19 1h1v1H19zM22 1h1v1H22zM28 1h1v1H28zM0 2h1v1H0zM2 2h3v1H2zM6 2h1v1H6zM9 2h1v1H9zM11 2h1v1H11zM13 2h2v1H13zM16 2h1v1H16zM19 2h1v1H19zM22 2h1v1H22zM24 2h3v1H24zM28 2h1v1H28zM0 3h1v1H0zM2 3h3v1H2zM6 3h1v1H6zM9 3h1v1H9zM11 3h5v1H11zM18 3h1v1H18zM22 3h1v1H22zM24 3h3v1H24zM28 3h1v1H28zM0 4h1v1H0zM2 4h3v1H2zM6 4h1v1H6zM8 4h3v1H8zM12 4h1v1H12zM14 4h1v1H14zM17 4h3v1H17zM22 4h1v1H22zM24 4h3v1H24zM28 4h1v1H28zM0 5h1v1H0zM6 5h1v1H6zM9 5h3v1H9zM13 5h1v1H13zM17 5h3v1H17zM22 5h1v1H22zM28 5h1v1H28zM0 6h7v1H0zM8 6h1v1H8zM10 6h1v1H10zM12 6h1v1H12zM14 6h1v1H14zM16 6h1v1H16zM18 6h1v1H18zM20 6h1v1H20zM22 6h7v1H22zM11 7h4v1H11zM16 7h2v1H16zM0 8h1v1H0zM2 8h1v1H2zM4 8h1v1H4zM6 8h1v1H6zM9 8h4v1H9zM14 8h2v1H14zM17 8h2v1H17zM24 8h1v1H24zM27 8h1v1H27zM0 9h2v1H0zM3 9h1v1H3zM7 9h2v1H7zM12 9h1v1H12zM14 9h2v1H14zM20 9h3v1H20zM25 9h1v1H25zM28 9h1v1H28zM4 10h1v1H4zM6 10h2v1H6zM10 10h1v1H10zM13 10h1v1H13zM17 10h1v1H17zM21 10h2v1H21zM26 10h3v1H26zM1 11h1v1H1zM8 11h2v1H8zM11 11h1v1H11zM15 11h1v1H15zM17 11h5v1H17zM24 11h1v1H24zM27 11h1v1H27zM1 12h1v1H1zM3 12h1v1H3zM5 12h4v1H5zM10 12h1v1H10zM16 12h2v1H16zM20 12h3v1H20zM25 12h1v1H25zM27 12h2v1H27zM0 13h6v1H0zM7 13h1v1H7zM12 13h2v1H12zM15 13h3v1H15zM20 13h1v1H20zM22 13h1v1H22zM25 13h1v1H25zM28 13h1v1H28zM0 14h2v1H0zM3 14h1v1H3zM5 14h3v1H5zM10 14h2v1H10zM14 14h4v1H14zM20 14h1v1H20zM22 14h4v1H22zM27 14h2v1H27zM1 15h2v1H1zM4 15h2v1H4zM7 15h1v1H7zM11 15h4v1H11zM16 15h2v1H16zM19 15h4v1H19zM25 15h1v1H25zM27 15h1v1H27zM0 16h1v1H0zM3 16h1v1H3zM6 16h1v1H6zM10 16h1v1H10zM12 16h1v1H12zM14 16h2v1H14zM17 16h1v1H17zM21 16h3v1H21zM25 16h1v1H25zM27 16h2v1H27zM3 17h1v1H3zM5 17h1v1H5zM7 17h5v1H7zM14 17h2v1H14zM20 17h1v1H20zM22 17h1v1H22zM25 17h2v1H25zM28 17h1v1H28zM0 18h1v1H0zM2 18h1v1H2zM4 18h3v1H4zM8 18h1v1H8zM13 18h1v1H13zM20 18h1v1H20zM23 18h1v1H23zM27 18h2v1H27zM1 19h1v1H1zM4 19h2v1H4zM10 19h3v1H10zM15 19h1v1H15zM17 19h1v1H17zM20 19h1v1H20zM24 19h2v1H24zM27 19h1v1H27zM0 20h1v1H0zM2 20h5v1H2zM8 20h2v1H8zM11 20h2v1H11zM16 20h2v1H16zM19 20h6v1H19zM8 21h3v1H8zM13 21h1v1H13zM15 21h3v1H15zM19 21h2v1H19zM24 21h1v1H24zM26 21h3v1H26zM0 22h7v1H0zM12 22h1v1H12zM14 22h3v1H14zM19 22h2v1H19zM22 22h1v1H22zM24 22h2v1H24zM27 22h2v1H27zM0 23h1v1H0zM6 23h1v1H6zM11 23h4v1H11zM16 23h3v1H16zM20 23h1v1H20zM24 23h2v1H24zM27 23h2v1H27zM0 24h1v1H0zM2 24h3v1H2zM6 24h1v1H6zM8 24h5v1H8zM14 24h4v1H14zM20 24h5v1H20zM27 24h1v1H27zM0 25h1v1H0zM2 25h3v1H2zM6 25h1v1H6zM9 25h1v1H9zM11 25h2v1H11zM14 25h2v1H14zM17 25h1v1H17zM21 25h1v1H21zM23 25h2v1H23zM26 25h1v1H26zM0 26h1v1H0zM2 26h3v1H2zM6 26h1v1H6zM8 26h1v1H8zM10 26h3v1H10zM16 26h1v1H16zM23 26h3v1H23zM28 26h1v1H28zM0 27h1v1H0zM6 27h1v1H6zM9 27h1v1H9zM12 27h1v1H12zM15 27h6v1H15zM22 27h3v1H22zM27 27h1v1H27zM0 28h7v1H0zM8 28h1v1H8zM10 28h2v1H10zM13 28h2v1H13zM17 28h1v1H17zM19 28h2v1H19zM23 28h2v1H23zM27 28h2v1H27z"/></svg>
+<div class="pad center small">foundry.internal/fleet</div>
+<hr class="rule-2">
+<div class="pad center small">printed 06:45 · this strip fades<br>by autumn — the board won't</div>
+
+</body>
+</html>

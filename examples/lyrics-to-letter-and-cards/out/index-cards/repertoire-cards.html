@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Repertoire — 3×5 index cards (4 cards)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:ital,wght@0,500;0,700;1,500&family=Archivo:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     Surface: index-card-3x5, landscape (5in wide × 3in tall).
+     Decision record: ../../decisions/index-cards.md
+     One song per card; Last Bus Out of Calloway splits across
+     cards 2+3, laid SIDE BY SIDE (never front/back — the player
+     can't flip mid-song). Condensed face at 8pt, chords bold
+     above syllables, phrase-boundary breaks only.
+     Print on pre-cut 3×5 stock, landscape feed, one card/page.
+     ============================================================ */
+  @page { size: 5in 3in; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #fff; }
+
+  .card {
+    width: 5in; height: 3in;
+    padding: 0.1in 0.13in 0.08in;
+    overflow: hidden;
+    page-break-after: always;
+    color: #111;
+    font-family: "Archivo Narrow", "Arial Narrow", sans-serif;
+    font-weight: 500;
+    font-size: 8.5pt;          /* deck standard — proofed */
+    line-height: 1.12;
+  }
+  .card:last-child { page-break-after: auto; }
+  /* screen preview only — invisible to print */
+  @media screen {
+    body { background: #e8e6e1; padding: 16px; }
+    .card { margin: 0 auto 14px; background: #fff; box-shadow: 0 1px 4px rgba(0,0,0,.18); }
+  }
+
+  /* --- card header: title · key · tempo --- */
+  header {
+    display: flex; align-items: baseline; justify-content: space-between;
+    border-bottom: 1.5pt solid #111; padding-bottom: 2.5pt; margin-bottom: 2pt;
+  }
+  h1 {
+    font-family: "Archivo", sans-serif; font-weight: 800;
+    font-size: 10pt; letter-spacing: 0.02em; text-transform: uppercase;
+  }
+  .meta {
+    font-family: "Archivo", sans-serif; font-weight: 700;
+    font-size: 6.5pt; letter-spacing: 0.1em; text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .part { /* 1 OF 2 flag on split songs */
+    display: inline-block; background: #111; color: #fff;
+    padding: 1pt 4pt 1.5pt; margin-left: 5pt;
+  }
+
+  /* --- columns --- */
+  .cols { display: flex; gap: 0.12in; }
+  .col { flex: 1 1 0; min-width: 0; }
+  .col + .col { border-left: 0.75pt solid #999; padding-left: 0.12in; }
+
+  /* --- chord-over-syllable rows --- */
+  .l { white-space: nowrap; padding-top: 0.78em; }
+  .turn { padding-left: 1.2em; }
+  .c { position: relative; }
+  .c::before {
+    content: attr(data-c);
+    position: absolute; left: 0; bottom: calc(100% - 0.05em);
+    font-family: "Archivo Narrow", sans-serif; font-weight: 700;
+    font-size: 0.72em;
+  }
+
+  section { margin-top: 4.5pt; }
+  section:first-of-type { margin-top: 0; }
+  .label {
+    font-family: "Archivo", sans-serif; font-weight: 700;
+    font-size: 5.5pt; letter-spacing: 0.14em; text-transform: uppercase;
+    margin-top: 5pt; color: #111;
+  }
+  .cue { font-style: italic; padding-top: 0.7em; font-size: 0.92em; }
+  .note {
+    font-family: "Archivo", sans-serif; font-weight: 700;
+    font-size: 6pt; letter-spacing: 0.08em; text-transform: uppercase;
+    border: 1pt solid #111; padding: 2.5pt 4pt; margin-top: 7pt;
+    display: inline-block;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= CARD 1 · THE LONG MEANDER ================= -->
+<div class="card">
+  <header>
+    <h1>The Long Meander</h1>
+    <div class="meta">Key G · ♩=76 · 4/4</div>
+  </header>
+  <div class="cols">
+    <div class="col">
+      <section>
+        <div class="l"><span class="c" data-c="G">Down</span> where the <span class="c" data-c="C">willows</span> bend to <span class="c" data-c="G">drink,</span></div>
+        <div class="l">the <span class="c" data-c="Em">water</span> keeps the <span class="c" data-c="C">ledger</span> of the <span class="c" data-c="D">shore.</span></div>
+        <div class="l"><span class="c" data-c="G">Every</span> name we <span class="c" data-c="C">carved</span> into the <span class="c" data-c="G">bank</span></div>
+        <div class="l">the <span class="c" data-c="Em">river</span> reads, and <span class="c" data-c="D">carries</span> to the <span class="c" data-c="G">sea.</span></div>
+      </section>
+      <div class="label">Chorus</div>
+      <section>
+        <div class="l"><span class="c" data-c="C">Roll</span> on, <span class="c" data-c="G">long meander,</span></div>
+        <div class="l"><span class="c" data-c="D">take</span> the slow way <span class="c" data-c="Em">home.</span></div>
+        <div class="l"><span class="c" data-c="C">What</span> the current <span class="c" data-c="G">gathers,</span></div>
+        <div class="l">the <span class="c" data-c="D">del</span>ta gets to <span class="c" data-c="G">know.</span></div>
+      </section>
+    </div>
+    <div class="col">
+      <section>
+        <div class="l"><span class="c" data-c="G">I</span> have hurried <span class="c" data-c="C">half</span> my mornings <span class="c" data-c="G">gone,</span></div>
+        <div class="l"><span class="c" data-c="Em">chasing</span> after <span class="c" data-c="C">trains</span> I never <span class="c" data-c="D">caught.</span></div>
+        <div class="l">The <span class="c" data-c="G">river</span> never <span class="c" data-c="C">hurried</span> any<span class="c" data-c="G">where</span></div>
+        <div class="l">and <span class="c" data-c="Em">still</span> it finds the <span class="c" data-c="D">ocean</span> every <span class="c" data-c="G">time.</span></div>
+        <div class="cue">— chorus —</div>
+      </section>
+      <section>
+        <div class="l">So <span class="c" data-c="G">lay</span> your worry <span class="c" data-c="C">down</span> among the <span class="c" data-c="G">reeds,</span></div>
+        <div class="l">let the <span class="c" data-c="Em">water</span> hold the <span class="c" data-c="C">things</span> you cannot <span class="c" data-c="D">keep.</span></div>
+        <div class="l"><span class="c" data-c="G">We</span> are all just <span class="c" data-c="C">rain</span> that got to<span class="c" data-c="G">geth</span>er,</div>
+        <div class="l"><span class="c" data-c="Em">looking</span> for the <span class="c" data-c="D">long</span> way to the <span class="c" data-c="G">sea.</span></div>
+        <div class="cue">— chorus ×2 · end on G —</div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ========= CARD 2 · LAST BUS OUT OF CALLOWAY · 1 OF 2 ========= -->
+<div class="card">
+  <header>
+    <h1>Last Bus Out of Calloway</h1>
+    <div class="meta">C · Capo 2 · ♩=132<span class="part">Card 1 of 2 →</span></div>
+  </header>
+  <div class="cols">
+    <div class="col">
+      <section>
+        <div class="l">The <span class="c" data-c="C">diner</span> light goes <span class="c" data-c="F">amber</span></div>
+        <div class="l turn">at a <span class="c" data-c="C">quarter</span> after nine,</div>
+        <div class="l"><span class="c" data-c="Am">Earl</span> stacks up the <span class="c" data-c="F">chairs</span></div>
+        <div class="l turn">and pockets <span class="c" data-c="G">up</span> his keys.</div>
+        <div class="l">There's a <span class="c" data-c="C">duffel</span> in the <span class="c" data-c="F">gravel</span></div>
+        <div class="l turn">and a <span class="c" data-c="C">ticket</span> in my hand,</div>
+        <div class="l">and a <span class="c" data-c="Am">wind</span> that smells like</div>
+        <div class="l turn"><span class="c" data-c="G">anywhere</span> but <span class="c" data-c="C">here.</span></div>
+      </section>
+    </div>
+    <div class="col">
+      <section>
+        <div class="l"><span class="c" data-c="C">Mama</span> said this <span class="c" data-c="F">town</span> will hold you</div>
+        <div class="l turn"><span class="c" data-c="C">like</span> a too-small coat,</div>
+        <div class="l"><span class="c" data-c="Am">warm</span> enough to <span class="c" data-c="F">make</span> you</div>
+        <div class="l turn">stay too <span class="c" data-c="G">long.</span></div>
+        <div class="l">I <span class="c" data-c="C">left</span> a note by the <span class="c" data-c="F">coffee</span> pot</div>
+        <div class="l turn">with the <span class="c" data-c="C">truth</span> and nothing else:</div>
+        <div class="l"><span class="c" data-c="Am">some</span> birds are only</div>
+        <div class="l turn"><span class="c" data-c="G">borrowing</span> the <span class="c" data-c="C">barn.</span></div>
+      </section>
+    </div>
+    <div class="col">
+      <div class="label">Chorus</div>
+      <section style="margin-top:0">
+        <div class="l"><span class="c" data-c="F">Last</span> bus out of <span class="c" data-c="C">Calloway,</span></div>
+        <div class="l"><span class="c" data-c="G">headlights</span> through the <span class="c" data-c="Am">rain.</span></div>
+        <div class="l"><span class="c" data-c="F">Everything</span> I'm <span class="c" data-c="C">keeping</span></div>
+        <div class="l"><span class="c" data-c="G">fits</span> the rack above my <span class="c" data-c="C">seat.</span></div>
+      </section>
+      <div class="note">Verse 3 → card 2, at right</div>
+    </div>
+  </div>
+</div>
+
+<!-- ========= CARD 3 · LAST BUS OUT OF CALLOWAY · 2 OF 2 ========= -->
+<div class="card">
+  <header>
+    <h1>Last Bus Out of Calloway</h1>
+    <div class="meta">C · Capo 2 · ♩=132<span class="part">→ Card 2 of 2</span></div>
+  </header>
+  <div class="cols">
+    <div class="col">
+      <section>
+        <div class="l">The <span class="c" data-c="C">driver</span> takes my <span class="c" data-c="F">dollar,</span> says</div>
+        <div class="l turn">&ldquo;Son, <span class="c" data-c="C">I</span> have seen that look&nbsp;&mdash;</div>
+        <div class="l"><span class="c" data-c="Am">half</span> of this whole <span class="c" data-c="F">county</span></div>
+        <div class="l turn">wears it <span class="c" data-c="G">well.&rdquo;</span></div>
+        <div class="l">We <span class="c" data-c="C">roll</span> past the old <span class="c" data-c="F">water</span> tower,</div>
+        <div class="l turn">my <span class="c" data-c="C">name</span> in faded paint,</div>
+        <div class="l">and <span class="c" data-c="Am">I</span> don't turn around</div>
+        <div class="l turn">to <span class="c" data-c="G">watch</span> it disap<span class="c" data-c="C">pear.</span></div>
+      </section>
+    </div>
+    <div class="col">
+      <div class="cue" style="padding-top:0">— chorus —</div>
+      <div class="label">Bridge</div>
+      <section style="margin-top:0">
+        <div class="l"><span class="c" data-c="Am">If</span> I make it <span class="c" data-c="F">big</span></div>
+        <div class="l turn">or make it <span class="c" data-c="C">broke,</span></div>
+        <div class="l"><span class="c" data-c="Am">either</span> way I'll <span class="c" data-c="F">send</span></div>
+        <div class="l turn">a postcard <span class="c" data-c="G">home.</span></div>
+        <div class="l">The <span class="c" data-c="Am">hardest</span> part</div>
+        <div class="l turn">of <span class="c" data-c="F">leaving</span> Calloway</div>
+        <div class="l">is <span class="c" data-c="G">how</span> easy it turns</div>
+        <div class="l turn">out to be. <span class="c" data-c="(stop)">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
+      </section>
+    </div>
+    <div class="col">
+      <div class="label">Final chorus · off the stop</div>
+      <section style="margin-top:0">
+        <div class="l"><span class="c" data-c="F">Last</span> bus out of <span class="c" data-c="C">Calloway,</span></div>
+        <div class="l"><span class="c" data-c="G">headlights</span> through the <span class="c" data-c="Am">rain.</span></div>
+        <div class="l"><span class="c" data-c="F">Everything</span> I'm <span class="c" data-c="C">keeping</span></div>
+        <div class="l"><span class="c" data-c="G">fits</span> the rack above my <span class="c" data-c="C">seat.</span></div>
+        <div class="l"><span class="c" data-c="G">fits</span> the rack above my <span class="c" data-c="C">seat.</span></div>
+      </section>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CARD 4 · THE ORCHARD WALTZ ================= -->
+<!-- Set 0.5pt below deck standard: the waltz phrases run long, and
+     phrase integrity beats half a point. Proofed at 8pt, no turnovers. -->
+<div class="card" style="font-size:8pt">
+  <header>
+    <h1>The Orchard Waltz</h1>
+    <div class="meta">Key D · ♩=96 · 3/4</div>
+  </header>
+  <div class="cols">
+    <div class="col">
+      <section>
+        <div class="l"><span class="c" data-c="D">Take</span> down the <span class="c" data-c="G">lantern</span> that <span class="c" data-c="D">hangs</span> in the rafter,</div>
+        <div class="l"><span class="c" data-c="Bm">shake</span> out your <span class="c" data-c="G">Sunday-best</span> <span class="c" data-c="A">shawl.</span></div>
+        <div class="l">The <span class="c" data-c="D">cider</span> is <span class="c" data-c="G">sweet</span> and the <span class="c" data-c="D">fiddle</span> is tuning</div>
+        <div class="l">in the <span class="c" data-c="Bm">orchard</span> at the <span class="c" data-c="A">end</span> of the <span class="c" data-c="D">fall.</span></div>
+      </section>
+      <div class="label">Chorus</div>
+      <section style="margin-top:0">
+        <div class="l"><span class="c" data-c="G">Spin</span> with me <span class="c" data-c="D">under</span> the apple boughs, darling,</div>
+        <div class="l"><span class="c" data-c="A">leaves</span> coming <span class="c" data-c="Bm">down</span> where we turn.</div>
+        <div class="l"><span class="c" data-c="G">All</span> of the <span class="c" data-c="D">winters</span> that wait for us, darling,</div>
+        <div class="l">can <span class="c" data-c="A">wait</span> till the <span class="c" data-c="D">lantern</span> burns down.</div>
+      </section>
+    </div>
+    <div class="col">
+      <section>
+        <div class="l">Your <span class="c" data-c="D">grandmother</span> <span class="c" data-c="G">danced</span> here the <span class="c" data-c="D">year</span> of the comet,</div>
+        <div class="l">your <span class="c" data-c="Bm">grandfather</span> <span class="c" data-c="G">counted</span> her <span class="c" data-c="A">steps.</span></div>
+        <div class="l">The <span class="c" data-c="D">trees</span> keep the <span class="c" data-c="G">time</span> of a <span class="c" data-c="D">hundred</span> Octobers</div>
+        <div class="l">in <span class="c" data-c="Bm">rings</span> that no<span class="c" data-c="A">bod</span>y has <span class="c" data-c="D">read.</span></div>
+        <div class="cue">— chorus —</div>
+      </section>
+      <section>
+        <div class="l">When the <span class="c" data-c="D">band</span> packs a<span class="c" data-c="G">way</span> and the <span class="c" data-c="D">lantern</span> goes under</div>
+        <div class="l">and <span class="c" data-c="Em">frost</span> finds the <span class="c" data-c="G">gate</span> by the <span class="c" data-c="A">lane,</span></div>
+        <div class="l">we'll have <span class="c" data-c="D">had</span> this one <span class="c" data-c="G">waltz</span> at the <span class="c" data-c="D">turn</span> of the season,</div>
+        <div class="l">and <span class="c" data-c="Bm">no</span>body <span class="c" data-c="A">takes</span> it a<span class="c" data-c="D">way.</span></div>
+        <div class="cue">— chorus · ritard, end on D —</div>
+      </section>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

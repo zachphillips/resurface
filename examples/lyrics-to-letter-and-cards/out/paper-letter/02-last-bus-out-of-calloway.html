@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Last Bus Out of Calloway — lyric sheet, 8.5×11</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,560;1,9..144,420&family=Source+Serif+4:ital,opsz,wght@0,8..60,420;1,8..60,420&family=Archivo:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  /* ============================================================
+     Surface: paper-letter (8.5×11in, one side only).
+     Decision record: ../../decisions/paper-letter.md
+     36 rows — too tall for one column at a singable size, so:
+     two columns at 15.5pt, column break at a section boundary
+     (after the chorus). Long lines broken at phrase boundaries
+     with hymnal turnover indents; never mid-phrase.
+     ============================================================ */
+  @page { size: 8.5in 11in; margin: 0; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { background: #fff; }
+  .sheet {
+    width: 8.5in; height: 11in;
+    padding: 0.45in 0.62in 0.4in;
+    overflow: hidden;
+    color: #111;
+    font-family: "Source Serif 4", Georgia, serif;
+    font-size: 15.5pt;
+    line-height: 1.13;
+  }
+
+  header { border-bottom: 2.5pt solid #111; padding-bottom: 10pt; }
+  h1 {
+    font-family: "Fraunces", serif; font-weight: 560;
+    font-size: 30pt; letter-spacing: -0.01em;
+  }
+  .meta {
+    margin-top: 5pt;
+    font-family: "Archivo", sans-serif; font-weight: 600;
+    font-size: 10pt; letter-spacing: 0.14em; text-transform: uppercase;
+    display: flex; gap: 1.6em;
+  }
+
+  .cols { display: flex; gap: 0.3in; margin-top: 4pt; }
+  .col { flex: 1 1 0; min-width: 0; }
+  .col + .col { border-left: 1.5pt solid #111; padding-left: 0.3in; }
+
+  .l { white-space: nowrap; padding-top: 0.8em; }
+  .turn { padding-left: 1.3em; }   /* phrase turnover — same musical line */
+  .c { position: relative; }
+  .c::before {
+    content: attr(data-c);
+    position: absolute; left: 0; bottom: calc(100% - 0.06em);
+    font-family: "Archivo", sans-serif; font-weight: 700;
+    font-size: 0.62em; letter-spacing: 0.01em; color: #111;
+  }
+
+  section { margin-top: 10pt; }
+  section:first-of-type { margin-top: 0; }
+  .label {
+    font-family: "Archivo", sans-serif; font-weight: 700;
+    font-size: 10pt; letter-spacing: 0.16em; text-transform: uppercase;
+    margin-top: 12pt; padding-bottom: 1pt;
+  }
+  .chorus { padding-left: 0.3in; }
+  .cue {
+    font-family: "Fraunces", serif; font-style: italic; font-weight: 420;
+    font-size: 0.78em; padding-top: 0.85em; padding-left: 0.3in; color: #111;
+  }
+</style>
+</head>
+<body>
+<div class="sheet">
+
+  <header>
+    <h1>Last Bus Out of Calloway</h1>
+    <div class="meta"><span>Key&nbsp;C&nbsp;·&nbsp;Capo&nbsp;2</span><span>♩&nbsp;=&nbsp;132</span><span>4/4</span><span>drive&nbsp;the&nbsp;downstrokes</span></div>
+  </header>
+
+  <div class="cols">
+  <div class="col">
+
+    <section><!-- verse 1 -->
+      <div class="l">The <span class="c" data-c="C">diner</span> light goes <span class="c" data-c="F">amber</span></div>
+      <div class="l turn">at a <span class="c" data-c="C">quarter</span> after nine,</div>
+      <div class="l"><span class="c" data-c="Am">Earl</span> stacks up the <span class="c" data-c="F">chairs</span></div>
+      <div class="l turn">and pockets <span class="c" data-c="G">up</span> his keys.</div>
+      <div class="l">There's a <span class="c" data-c="C">duffel</span> in the <span class="c" data-c="F">gravel</span></div>
+      <div class="l turn">and a <span class="c" data-c="C">ticket</span> in my hand,</div>
+      <div class="l">and a <span class="c" data-c="Am">wind</span> that smells like</div>
+      <div class="l turn"><span class="c" data-c="G">anywhere</span> but <span class="c" data-c="C">here.</span></div>
+    </section>
+
+    <section><!-- verse 2 -->
+      <div class="l"><span class="c" data-c="C">Mama</span> said this <span class="c" data-c="F">town</span> will hold you</div>
+      <div class="l turn"><span class="c" data-c="C">like</span> a too-small coat,</div>
+      <div class="l"><span class="c" data-c="Am">warm</span> enough to <span class="c" data-c="F">make</span> you</div>
+      <div class="l turn">stay too <span class="c" data-c="G">long.</span></div>
+      <div class="l">I <span class="c" data-c="C">left</span> a note by the <span class="c" data-c="F">coffee</span> pot</div>
+      <div class="l turn">with the <span class="c" data-c="C">truth</span> and nothing else:</div>
+      <div class="l"><span class="c" data-c="Am">some</span> birds are only</div>
+      <div class="l turn"><span class="c" data-c="G">borrowing</span> the <span class="c" data-c="C">barn.</span></div>
+    </section>
+
+    <div class="label">Chorus</div>
+    <section class="chorus">
+      <div class="l"><span class="c" data-c="F">Last</span> bus out of <span class="c" data-c="C">Calloway,</span></div>
+      <div class="l"><span class="c" data-c="G">headlights</span> through the <span class="c" data-c="Am">rain.</span></div>
+      <div class="l"><span class="c" data-c="F">Everything</span> I'm <span class="c" data-c="C">keeping</span></div>
+      <div class="l"><span class="c" data-c="G">fits</span> the rack above my <span class="c" data-c="C">seat.</span></div>
+    </section>
+
+  </div>
+  <div class="col">
+
+    <section><!-- verse 3 -->
+      <div class="l">The <span class="c" data-c="C">driver</span> takes my <span class="c" data-c="F">dollar,</span> says</div>
+      <div class="l turn">&ldquo;Son, <span class="c" data-c="C">I</span> have seen that look&nbsp;&mdash;</div>
+      <div class="l"><span class="c" data-c="Am">half</span> of this whole <span class="c" data-c="F">county</span></div>
+      <div class="l turn">wears it <span class="c" data-c="G">well.&rdquo;</span></div>
+      <div class="l">We <span class="c" data-c="C">roll</span> past the old <span class="c" data-c="F">water</span> tower,</div>
+      <div class="l turn">my <span class="c" data-c="C">name</span> in faded paint,</div>
+      <div class="l">and <span class="c" data-c="Am">I</span> don't turn around</div>
+      <div class="l turn">to <span class="c" data-c="G">watch</span> it disap<span class="c" data-c="C">pear.</span></div>
+      <div class="cue">— chorus —</div>
+    </section>
+
+    <div class="label">Bridge</div>
+    <section>
+      <div class="l"><span class="c" data-c="Am">If</span> I make it <span class="c" data-c="F">big</span> or make it <span class="c" data-c="C">broke,</span></div>
+      <div class="l"><span class="c" data-c="Am">either</span> way I'll <span class="c" data-c="F">send</span></div>
+      <div class="l turn">a postcard <span class="c" data-c="G">home.</span></div>
+      <div class="l">The <span class="c" data-c="Am">hardest</span> part of <span class="c" data-c="F">leaving</span> Calloway</div>
+      <div class="l">is <span class="c" data-c="G">how</span> easy it turns out to be. <span class="c" data-c="(stop)">&nbsp;</span></div>
+      <div class="cue">— chorus · last line ×2, off the stop —</div>
+    </section>
+
+  </div>
+  </div>
+
+</div>
+</body>
+</html>

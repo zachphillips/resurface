@@ -1,0 +1,1431 @@
+<!DOCTYPE html>
+<html lang="en" data-surface="screen">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ReSurface — Responsive beyond the viewport</title>
+<meta name="description" content="ReSurface is an open-source skill framework that lets agents re-design anything — form and content — for any surface: paper, e-ink, thermal printers, index cards, slides. This page is the demo.">
+<meta property="og:title" content="ReSurface — Responsive beyond the viewport">
+<meta property="og:description" content="Breakpoints move boxes. ReSurface re-decides design and content for any surface you can measure — then proofs at true device fidelity and delivers. Open source, MIT.">
+<meta property="og:type" content="website">
+<link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wdth,wght@0,62..125,100..900;1,62..125,100..900&family=Instrument+Serif:ital@0;1&family=Newsreader:ital,opsz,wght@0,6..72,200..800;1,6..72,200..800&family=Spline+Sans+Mono:ital,wght@0,300..700;1,300..700&display=swap" rel="stylesheet">
+<style>
+/* ================================================================
+   TOKENS — Paper Specimen Utility
+   ================================================================ */
+:root{
+  --paper:#F4F1E9;
+  --paper-2:#ECE8DC;
+  --ink:#1A1915;
+  --ink-2:#5A574E;
+  --cobalt:#0B57F0;
+  --cobalt-deep:#0843B8;
+  --tint:#E8EFFD;
+  --line:#D8D2C2;
+  --tan:#B5A488;
+  --white:#FFFFFF;
+  --black:#000000;
+  --desk:#F4F1E9;
+  --serif:"Instrument Serif", Georgia, serif;
+  --grot:"Archivo", "Helvetica Neue", sans-serif;
+  --mono:"Spline Sans Mono", "SF Mono", monospace;
+  --text-serif:"Newsreader", Georgia, serif;
+  --dither:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='4' height='4'%3E%3Crect width='2' height='2' fill='%23000'/%3E%3Crect x='2' y='2' width='2' height='2' fill='%23000'/%3E%3C/svg%3E");
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+html,body{height:auto}
+body{
+  background:var(--desk);
+  color:var(--ink);
+  font-family:var(--grot);
+  font-size:16.5px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  transition:background .45s ease;
+  overflow-x:clip;
+}
+::selection{background:var(--cobalt);color:#fff}
+a{color:inherit}
+[hidden]{display:none!important}
+button{font:inherit;cursor:pointer;background:none;border:none;color:inherit}
+
+/* paper grain over everything */
+body::after{
+  content:"";position:fixed;inset:0;z-index:9000;pointer-events:none;opacity:.05;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 .6 0'/%3E%3C/filter%3E%3Crect width='240' height='240' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode:multiply;
+}
+
+/* ================================================================
+   SHARED CHROME — topbar, chooser dock, decision record, fx
+   The chrome is the tool; the page is the artifact. Chrome never reskins.
+   ================================================================ */
+#topbar{
+  position:relative;z-index:20;
+  display:flex;align-items:center;gap:18px;
+  padding:18px 28px;
+}
+.brand{display:flex;align-items:center;gap:11px;text-decoration:none}
+.brand svg{width:34px;height:34px;flex:none}
+.wordmark{font-family:var(--grot);font-weight:800;font-size:20px;letter-spacing:-.01em}
+.wordmark b{color:var(--cobalt);font-weight:800}
+.spec-tag{
+  font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;
+  color:var(--ink-2);border:1px solid var(--line);border-radius:3px;padding:3px 8px;background:var(--white);
+}
+#topbar nav{margin-left:auto;display:flex;gap:26px;align-items:center}
+#topbar nav a{
+  text-decoration:none;font-size:14px;font-weight:600;color:var(--ink);
+  border-bottom:2px solid transparent;padding-bottom:2px;
+}
+#topbar nav a:hover{border-bottom-color:var(--cobalt);color:var(--cobalt)}
+#topbar nav a.gh{
+  background:var(--ink);color:var(--paper);border-radius:4px;padding:8px 14px;border:none;
+}
+#topbar nav a.gh:hover{background:var(--cobalt);color:#fff}
+
+/* crop marks — screen mode only */
+#crops span{position:fixed;width:22px;height:22px;z-index:15;pointer-events:none}
+#crops span::before,#crops span::after{content:"";position:absolute;background:var(--ink-2);opacity:.55}
+#crops span::before{width:100%;height:1px}
+#crops span::after{width:1px;height:100%}
+#crops .tl{top:10px;left:10px}#crops .tl::before{top:0}#crops .tl::after{left:0}
+#crops .tr{top:10px;right:10px}#crops .tr::before{top:0}#crops .tr::after{right:0}
+#crops .bl{bottom:10px;left:10px}#crops .bl::before{bottom:0}#crops .bl::after{left:0}
+#crops .br{bottom:10px;right:10px}#crops .br::before{bottom:0}#crops .br::after{right:0}
+html:not([data-surface="screen"]) #crops{display:none}
+
+/* chooser dock */
+#chooser{
+  position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:9500;
+  display:flex;align-items:stretch;gap:4px;
+  background:var(--white);border:1.5px solid var(--ink);border-radius:10px;
+  padding:6px;box-shadow:0 14px 34px -12px rgba(20,18,10,.45), 0 2px 0 var(--ink);
+  max-width:min(96vw,860px);overflow-x:auto;scrollbar-width:none;
+}
+#chooser::-webkit-scrollbar{display:none}
+.dock-label{
+  writing-mode:vertical-rl;transform:rotate(180deg);
+  font-family:var(--mono);font-size:9px;letter-spacing:.22em;color:var(--ink-2);
+  border-right:1px solid var(--line);padding:2px 1px 2px 4px;margin-right:3px;align-self:stretch;
+  display:flex;align-items:center;
+}
+.surf{
+  flex:none;display:flex;flex-direction:column;align-items:center;gap:3px;
+  border-radius:7px;padding:8px 12px 7px;border:1.5px solid transparent;
+  color:var(--ink);transition:background .15s,border-color .15s;position:relative;
+}
+.surf svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.surf .sname{font-size:11.5px;font-weight:700;letter-spacing:.02em}
+.surf .sspec{font-family:var(--mono);font-size:8.5px;letter-spacing:.06em;color:var(--ink-2)}
+.surf:hover{background:var(--tint);border-color:var(--cobalt)}
+.surf[aria-pressed="true"]{background:var(--cobalt);border-color:var(--cobalt-deep);color:#fff}
+.surf[aria-pressed="true"] .sspec{color:#CFE0FF}
+.surf .key{
+  position:absolute;top:3px;right:5px;font-family:var(--mono);font-size:8px;color:var(--ink-2);opacity:0;
+}
+#chooser:hover .surf .key{opacity:.8}
+.surf[aria-pressed="true"] .key{color:#CFE0FF}
+#rec-toggle{
+  flex:none;border-left:1px solid var(--line);margin-left:3px;padding:0 10px;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--ink-2);
+  display:flex;align-items:center;border-radius:0 7px 7px 0;
+}
+#rec-toggle:hover{color:var(--cobalt)}
+#rec-toggle[aria-pressed="true"]{color:var(--cobalt);font-weight:600}
+
+/* decision record */
+#record{
+  position:fixed;right:18px;bottom:96px;z-index:9400;width:262px;
+  background:var(--white);border:1.5px solid var(--ink);border-radius:8px;
+  box-shadow:0 14px 30px -14px rgba(20,18,10,.5);
+  font-family:var(--mono);overflow:hidden;
+  transform-origin:bottom right;
+  transition:transform .25s ease,opacity .25s ease;
+}
+#record.hide{transform:scale(.92) translateY(8px);opacity:0;pointer-events:none}
+#record h3{
+  background:var(--ink);color:var(--paper);font-size:9.5px;font-weight:600;
+  letter-spacing:.22em;padding:7px 12px;display:flex;justify-content:space-between;align-items:center;
+}
+#record h3 em{font-style:normal;color:var(--tan)}
+#record ul{list-style:none;padding:10px 12px 12px}
+#record li{
+  font-size:10.5px;line-height:1.5;padding:4px 0 4px 14px;position:relative;color:var(--ink);
+  border-bottom:1px dotted var(--line);
+}
+#record li:last-child{border-bottom:none}
+#record li::before{content:"·";position:absolute;left:2px;color:var(--cobalt);font-weight:700}
+#record li.spec{color:var(--ink-2);letter-spacing:.05em;font-size:9.5px;text-transform:uppercase}
+#record li.spec::before{content:"§"}
+@keyframes recpulse{0%{box-shadow:0 0 0 0 rgba(11,87,240,.55)}100%{box-shadow:0 0 0 14px rgba(11,87,240,0)}}
+#record.pulse{animation:recpulse .8s ease 1}
+
+/* fx layer: e-ink refresh flash */
+#fx{position:fixed;inset:0;z-index:9800;pointer-events:none;background:#000;opacity:0}
+#fx.flash{animation:einkflash .55s steps(2,end) 1}
+@keyframes einkflash{0%{opacity:1}25%{opacity:0}50%{opacity:1}75%{opacity:0}100%{opacity:0}}
+
+/* ================================================================
+   THE ARTIFACT — base = SCREEN skin (Paper Specimen Utility)
+   ================================================================ */
+#sheet{position:relative;z-index:10;transition:max-width .4s ease}
+.sec{max-width:1180px;margin:0 auto;padding:84px 36px}
+
+.sec-head{display:flex;align-items:baseline;gap:14px;border-top:1.5px solid var(--ink);padding-top:14px;margin-bottom:42px}
+.sec-num{font-family:var(--mono);font-size:11px;letter-spacing:.18em;color:var(--cobalt);font-weight:600}
+.sec-title{font-family:var(--serif);font-size:clamp(28px,3.4vw,44px);line-height:1.05;font-weight:400}
+.sec-meta{margin-left:auto;font-family:var(--mono);font-size:10px;letter-spacing:.14em;color:var(--ink-2);text-transform:uppercase}
+
+/* hero */
+#hero .v-full{display:grid;grid-template-columns:minmax(0,1.08fr) minmax(0,.92fr);gap:56px;align-items:center;padding-top:26px}
+.kicker{font-family:var(--mono);font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-2);display:flex;align-items:center;gap:10px;margin-bottom:22px}
+.kicker::before{content:"";width:34px;height:1.5px;background:var(--cobalt)}
+h1.display{
+  font-family:var(--serif);font-weight:400;font-size:clamp(46px,6.4vw,96px);
+  line-height:.98;letter-spacing:-.015em;margin-bottom:26px;
+}
+h1.display .vp{color:var(--cobalt);font-style:italic}
+.lede{font-size:clamp(16px,1.45vw,19.5px);line-height:1.65;color:var(--ink-2);max-width:34em;margin-bottom:34px}
+.lede strong{color:var(--ink);font-weight:600}
+.ctas{display:flex;gap:14px;flex-wrap:wrap;align-items:center}
+.btn{
+  display:inline-flex;align-items:center;gap:9px;text-decoration:none;font-weight:700;font-size:15px;
+  padding:13px 22px;border-radius:5px;border:1.5px solid var(--ink);
+  transition:transform .12s ease, box-shadow .12s ease, background .15s;
+}
+.btn.primary{background:var(--ink);color:var(--paper);box-shadow:3px 3px 0 var(--cobalt)}
+.btn.primary:hover{background:var(--cobalt);box-shadow:3px 3px 0 var(--ink);transform:translate(-1px,-1px)}
+.btn.ghost{background:var(--white)}
+.btn.ghost:hover{background:var(--tint);border-color:var(--cobalt);color:var(--cobalt)}
+.demo-hint{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--cobalt);margin-top:30px;display:inline-flex;gap:8px;align-items:center}
+.demo-hint::after{content:"↓";animation:bob 1.6s ease infinite}
+@keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
+
+/* hero trio: same brief on three surfaces */
+.trio{position:relative;display:grid;grid-template-columns:repeat(12,minmax(0,1fr));grid-template-rows:repeat(10,28px);filter:drop-shadow(0 18px 22px rgba(20,18,10,.18))}
+.artifact{background:var(--white);border:1.5px solid var(--ink);border-radius:3px;position:relative}
+.artifact .dim{
+  position:absolute;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;color:var(--ink-2);
+  background:var(--paper);border:1px solid var(--line);padding:1px 5px;border-radius:2px;white-space:nowrap;z-index:3;
+}
+.a-letter{grid-column:1/7;grid-row:1/11;padding:14px 13px;transform:rotate(-1.2deg)}
+.a-letter .dim{bottom:-9px;left:10px}
+.a-letter h4{font-family:var(--serif);font-size:15px;border-bottom:1.5px solid var(--ink);padding-bottom:5px;margin-bottom:8px}
+.tl-line{height:5px;background:var(--paper-2);border-radius:2px;margin:5px 0}
+.tl-line.b{background:var(--ink);opacity:.78}
+.tl-cols{display:grid;grid-template-columns:1fr 1fr;gap:0 12px;margin-top:8px}
+.tl-foot{display:flex;align-items:center;gap:7px;margin-top:11px}
+.tl-qr{width:22px;height:22px;flex:none;background:
+  conic-gradient(var(--ink) 90deg,transparent 0 180deg,var(--ink) 0 270deg,transparent 0) 0 0/8px 8px;
+  outline:1.5px solid var(--ink);outline-offset:2px}
+.tl-foot i{font-family:var(--mono);font-style:normal;font-size:7.5px;color:var(--ink-2);letter-spacing:.06em}
+.a-strip{grid-column:7/10;grid-row:2/11;padding:10px 8px;transform:rotate(1.4deg);font-family:var(--mono);
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 6px),95% 100%,85% calc(100% - 6px),75% 100%,65% calc(100% - 6px),55% 100%,45% calc(100% - 6px),35% 100%,25% calc(100% - 6px),15% 100%,5% calc(100% - 6px),0 100%)}
+.a-strip .dim{top:-9px;right:8px}
+.a-strip .band{background:var(--ink);color:#fff;font-size:8px;letter-spacing:.14em;text-align:center;padding:3px 2px;margin-bottom:7px}
+.a-strip .it{font-size:7.5px;letter-spacing:.04em;padding:2.5px 0;border-bottom:1px dotted var(--line);white-space:nowrap;overflow:hidden}
+.a-strip .it.done{text-decoration:line-through;color:var(--ink-2)}
+.a-strip .it.next{padding-left:8px}
+.a-strip .hr{border-top:1.5px solid var(--ink);margin:5px 0}
+.a-eink{grid-column:9/13;grid-row:1/6;background:#2A2A28;border:none;border-radius:8px;padding:9px;transform:rotate(2deg);z-index:2}
+.a-eink .dim{bottom:-9px;right:6px}
+.a-eink .epd{background:#fff;height:100%;border-radius:2px;padding:7px 8px;display:grid;grid-template-columns:1.2fr 1fr;gap:6px}
+.a-eink .big{font-family:var(--grot);font-weight:800;font-size:17px;line-height:1;letter-spacing:-.02em}
+.a-eink .big small{display:block;font-family:var(--mono);font-weight:400;font-size:6.5px;letter-spacing:.1em;margin-top:3px;color:#000}
+.a-eink ul{list-style:none;font-family:var(--mono);font-size:6.5px;line-height:1.9;border-left:1.5px solid #000;padding-left:6px}
+.same-tag{
+  position:absolute;top:-26px;left:0;font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;color:var(--cobalt);
+}
+
+/* ruler */
+.ruler{
+  margin:64px auto 0;max-width:1180px;height:30px;position:relative;
+  background:
+    repeating-linear-gradient(90deg,var(--ink-2) 0 1px,transparent 1px 12.5%) top/100% 14px no-repeat,
+    repeating-linear-gradient(90deg,var(--ink-2) 0 1px,transparent 1px 3.125%) top/100% 7px no-repeat;
+  border-top:1.5px solid var(--ink);opacity:.7;
+}
+.ruler i{position:absolute;top:14px;font-family:var(--mono);font-style:normal;font-size:8.5px;color:var(--ink-2);transform:translateX(3px)}
+
+/* contrast */
+.vs{display:grid;grid-template-columns:1fr 1fr;gap:26px;align-items:stretch}
+.panel{border:1.5px solid var(--ink);border-radius:6px;background:var(--white);overflow:hidden;display:flex;flex-direction:column}
+.panel .ph{font-family:var(--mono);font-size:10px;letter-spacing:.16em;padding:9px 14px;border-bottom:1.5px solid var(--ink);display:flex;justify-content:space-between}
+.panel.dull .ph{background:var(--paper-2);color:var(--ink-2)}
+.panel.live .ph{background:var(--cobalt);color:#fff;border-bottom-color:var(--cobalt-deep)}
+.panel pre{
+  font-family:var(--mono);font-size:12.5px;line-height:1.75;padding:18px 20px;white-space:pre-wrap;flex:1;
+}
+.panel.dull pre{color:var(--ink-2)}
+.panel pre .cm{color:var(--tan);font-style:italic}
+.panel pre .ok{color:var(--cobalt);font-weight:600}
+.panel .pf{font-size:13.5px;padding:13px 20px;border-top:1px solid var(--line);color:var(--ink-2)}
+.panel.live .pf{color:var(--ink);font-weight:600}
+.never{margin-top:30px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.never b{font-family:var(--mono);font-weight:600;font-size:10px;letter-spacing:.14em;color:var(--ink-2);margin-right:6px}
+.chip{
+  font-size:12.5px;font-weight:600;border:1px solid var(--ink);border-radius:99px;padding:5px 13px;background:var(--white);
+}
+.chip:nth-child(odd){transform:rotate(-.4deg)}
+.chip:hover{background:var(--tint);border-color:var(--cobalt);color:var(--cobalt)}
+
+/* how — 6 steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--ink);border:1.5px solid var(--ink);border-radius:6px;overflow:hidden}
+.step{background:var(--white);padding:24px 22px 20px;position:relative;transition:background .15s}
+.step:hover{background:var(--tint)}
+.step .n{font-family:var(--serif);font-size:46px;line-height:1;color:var(--cobalt)}
+.step h4{font-size:15px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;margin:10px 0 8px}
+.step p{font-size:13.5px;color:var(--ink-2);line-height:1.55}
+.step .art{
+  display:inline-block;margin-top:12px;font-family:var(--mono);font-size:9.5px;letter-spacing:.06em;
+  background:var(--paper);border:1px solid var(--line);border-radius:3px;padding:3px 7px;color:var(--ink);
+}
+
+/* rules */
+.rules-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.rule{border-top:1.5px solid var(--ink);padding-top:16px;position:relative}
+.rule i{font-family:var(--mono);font-style:normal;font-size:9.5px;letter-spacing:.16em;color:var(--cobalt)}
+.rule h4{font-family:var(--serif);font-size:25px;font-weight:400;line-height:1.12;margin:8px 0 8px}
+.rule p{font-size:13.5px;color:var(--ink-2)}
+
+/* surfaces table */
+.stable{border:1.5px solid var(--ink);border-radius:6px;overflow:hidden;background:var(--white)}
+.srow{display:grid;grid-template-columns:1.25fr 1fr .65fr .85fr 1.85fr;border-bottom:1px solid var(--line);align-items:center}
+.srow:last-child{border-bottom:none}
+.srow.head{background:var(--ink);color:var(--paper);border-bottom:none}
+.srow.head>*{font-family:var(--mono);font-size:9.5px;letter-spacing:.16em;text-transform:uppercase;padding:9px 14px;font-weight:600}
+.srow>*{padding:11px 14px;font-size:13px}
+.srow .sn{font-weight:700}
+.srow .sn small{display:block;font-weight:400;font-family:var(--mono);font-size:9px;color:var(--ink-2);letter-spacing:.05em;margin-top:1px}
+.srow .mono{font-family:var(--mono);font-size:11px;color:var(--ink-2);letter-spacing:.02em}
+.srow .what{color:var(--ink-2);font-size:12.5px}
+.srow:not(.head):hover{background:var(--tint)}
+.cap{display:inline-block;font-family:var(--mono);font-size:8.5px;letter-spacing:.08em;border:1px solid var(--line);border-radius:2px;padding:1px 5px;margin:1px 2px 1px 0;color:var(--ink-2);background:var(--paper)}
+.cap.mono1{border-color:var(--ink);color:var(--ink)}
+.stable-note{margin-top:14px;font-family:var(--mono);font-size:10.5px;color:var(--ink-2);letter-spacing:.04em}
+.stable-note a{color:var(--cobalt)}
+
+/* examples */
+.ex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:26px}
+.ex{border:1.5px solid var(--ink);border-radius:6px;background:var(--white);overflow:hidden;text-decoration:none;display:flex;flex-direction:column;transition:transform .15s ease,box-shadow .15s ease}
+.ex:hover{transform:translateY(-3px);box-shadow:0 14px 0 -6px var(--cobalt)}
+.ex .stage{height:210px;background:var(--paper-2);position:relative;overflow:hidden;border-bottom:1.5px solid var(--ink)}
+.ex .meta{padding:16px 18px 18px}
+.ex .meta i{font-family:var(--mono);font-style:normal;font-size:9px;letter-spacing:.14em;color:var(--cobalt)}
+.ex h4{font-size:16.5px;font-weight:800;margin:6px 0 6px;letter-spacing:-.01em}
+.ex p{font-size:13px;color:var(--ink-2)}
+/* mini artifacts */
+.m-page{position:absolute;left:50%;top:24px;transform:translateX(-50%) rotate(-1.5deg);width:130px;height:168px;background:#fff;border:1.5px solid var(--ink);border-radius:2px;padding:10px 9px;box-shadow:6px 6px 0 rgba(26,25,21,.12)}
+.m-page h5{font-family:var(--serif);font-size:10px;text-align:center;border-bottom:1px solid var(--ink);padding-bottom:3px;margin-bottom:5px;font-weight:400}
+.m-page .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 7px}
+.m-page .ln{height:3px;background:var(--paper-2);margin:3.5px 0;border-radius:1px}
+.m-page .ln.ch{background:var(--cobalt);width:55%;height:2.5px}
+.m-card2{position:absolute;right:18px;bottom:14px;width:96px;height:60px;background:#fff;border:1.5px solid var(--ink);border-radius:2px;transform:rotate(3deg);padding:6px;box-shadow:4px 4px 0 rgba(26,25,21,.12)}
+.m-card2::before{content:"";display:block;height:2px;background:#D26A5C;margin-bottom:4px}
+.m-card2 .ln{height:2.5px;background:var(--paper-2);margin:3px 0}
+.m-card2 i{position:absolute;bottom:3px;right:5px;font-family:var(--mono);font-style:normal;font-size:6px;color:var(--ink-2)}
+.m-strip{position:absolute;left:50%;top:16px;transform:translateX(-50%);width:108px;background:#fff;border:1.5px solid var(--ink);border-bottom:none;padding:8px 7px 12px;font-family:var(--mono);
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 5px),90% 100%,80% calc(100% - 5px),70% 100%,60% calc(100% - 5px),50% 100%,40% calc(100% - 5px),30% 100%,20% calc(100% - 5px),10% 100%,0 calc(100% - 2px))}
+.m-strip .bd{background:#000;color:#fff;font-size:6.5px;text-align:center;letter-spacing:.12em;padding:2px;margin-bottom:5px}
+.m-strip .it{font-size:6px;letter-spacing:.02em;padding:2px 0;border-bottom:1px dotted var(--line)}
+.m-strip .it.done{text-decoration:line-through;color:#8a8678}
+.m-strip .hr2{border-top:1.5px solid #000;margin:4px 0}
+.m-strip .qr{width:26px;height:26px;margin:6px auto 0}
+.m-epd{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-1deg);width:230px;height:148px;background:#2A2A28;border-radius:9px;padding:11px;box-shadow:0 12px 18px -8px rgba(26,25,21,.4)}
+.m-epd .scr{background:#fff;height:100%;border-radius:2px;display:grid;grid-template-columns:1fr .8fr;padding:9px 10px;gap:8px}
+.m-epd .deg{font-weight:800;font-size:23px;letter-spacing:-.02em;line-height:1}
+.m-epd .deg small{display:block;font-family:var(--mono);font-weight:400;font-size:6.5px;letter-spacing:.08em;margin-top:4px}
+.m-epd .st{font-family:var(--mono);font-size:6px;line-height:2.1;border-left:1.5px solid #000;padding-left:7px}
+
+/* install */
+#install .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:start}
+.codebox{background:var(--ink);border-radius:8px;overflow:hidden;box-shadow:6px 6px 0 var(--cobalt)}
+.codebox .cb-head{display:flex;gap:6px;padding:11px 14px;border-bottom:1px solid #3a382f;align-items:center}
+.codebox .cb-head i{width:9px;height:9px;border-radius:50%;background:#3a382f;font-style:normal}
+.codebox .cb-head span{margin-left:auto;font-family:var(--mono);font-size:9px;letter-spacing:.14em;color:#8d897a}
+.codebox pre{font-family:var(--mono);font-size:13px;line-height:1.9;padding:18px 20px;color:#EDE9DC;overflow-x:auto}
+.codebox pre .cm{color:#8d897a}
+.codebox pre .hl{color:#7FA8FF}
+.conns{display:flex;flex-wrap:wrap;gap:9px;margin-top:22px}
+.conn{font-family:var(--mono);font-size:10.5px;letter-spacing:.1em;border:1.5px solid var(--ink);border-radius:3px;padding:6px 11px;background:var(--white)}
+.conn:hover{background:var(--ink);color:var(--paper)}
+.cron-note{
+  margin-top:26px;border-left:3px solid var(--cobalt);background:var(--tint);
+  padding:14px 18px;font-size:14px;border-radius:0 6px 6px 0;
+}
+.cron-note b{font-family:var(--mono);font-size:10px;letter-spacing:.14em;display:block;color:var(--cobalt);margin-bottom:4px}
+
+/* footer */
+#colophon .v-full{border-top:1.5px solid var(--ink);padding-top:34px;display:flex;gap:30px;align-items:flex-start;flex-wrap:wrap}
+#colophon .cl{font-size:13px;color:var(--ink-2);max-width:46em;line-height:1.7}
+#colophon .cl b{color:var(--ink)}
+#colophon nav{margin-left:auto;display:flex;flex-direction:column;gap:7px;font-size:13.5px}
+#colophon nav a{color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+#colophon nav a:hover{color:var(--cobalt);border-bottom-color:var(--cobalt)}
+.fineprint{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;color:var(--ink-2);margin-top:26px;width:100%}
+
+/* generic strip/card/slide variant styling (hidden outside their modes) */
+.v-strip{font-family:var(--mono)}
+.band{background:var(--black);color:#fff;text-align:center;font-size:13px;letter-spacing:.18em;padding:6px 4px;margin:18px 0 10px;font-weight:600}
+.v-strip .sline{font-size:11.5px;letter-spacing:.02em;line-height:1.7;padding:3px 0;border-bottom:1px dotted #999;display:flex;justify-content:space-between;gap:8px}
+.v-strip .sline.done{text-decoration:line-through;color:#777}
+.v-strip .sline.q{padding-left:14px}
+.v-strip .sline.inv{background:#000;color:#fff;border-bottom:none;padding:4px 6px}
+.v-strip .sline em{font-style:normal;flex:none}
+.v-strip .hr{border-top:2px solid #000;margin:8px 0}
+.v-strip .center{text-align:center;font-size:10px;letter-spacing:.12em;line-height:1.8}
+
+/* ================================================================
+   MODE: LETTER — white sheet on a desk, ink-aware, writable
+   ================================================================ */
+html[data-surface="letter"]{--desk:#8E8E83}
+html[data-surface="letter"] body{background:var(--desk)}
+html[data-surface="letter"] #sheet{
+  max-width:880px;margin:6px auto 130px;background:#fff;border-radius:2px;
+  box-shadow:0 30px 60px -22px rgba(0,0,0,.55),0 2px 6px rgba(0,0,0,.2);
+  padding:72px 78px 56px;
+}
+html[data-surface="letter"] .sec{max-width:none;padding:42px 0;margin:0}
+html[data-surface="letter"] body{font-family:var(--text-serif);font-size:17px}
+html[data-surface="letter"] .sec-head{border-top-color:#000}
+html[data-surface="letter"] .sec-num{color:#000}
+html[data-surface="letter"] h1.display .vp{color:#000;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:6px}
+html[data-surface="letter"] #hero .v-full{grid-template-columns:1fr;gap:26px;padding-top:0}
+html[data-surface="letter"] .trio{display:none}
+html[data-surface="letter"] .ruler{display:none}
+html[data-surface="letter"] .demo-hint{color:#000}
+html[data-surface="letter"] .btn.primary{background:#fff;color:#000;box-shadow:none;border:1.5px solid #000}
+html[data-surface="letter"] .btn{box-shadow:none}
+html[data-surface="letter"] .btn .ico{display:none}
+html[data-surface="letter"] .btn::after{content:" — github.com/zachphillips/resurface";font-family:var(--mono);font-weight:400;font-size:10px}
+html[data-surface="letter"] .btn.ghost::after{content:" — see README"}
+html[data-surface="letter"] .panel.live .ph{background:#fff;color:#000;border-bottom:1.5px solid #000}
+html[data-surface="letter"] .codebox{background:#fff;border:1.5px solid #000;box-shadow:none}
+html[data-surface="letter"] .codebox pre{color:#000}
+html[data-surface="letter"] .codebox pre .hl{color:#000;font-weight:700}
+html[data-surface="letter"] .codebox pre .cm,html[data-surface="letter"] .codebox .cb-head span{color:#777}
+html[data-surface="letter"] .cron-note{background:#fff;border:1px solid #000;border-left:3px solid #000}
+html[data-surface="letter"] .cron-note b{color:#000}
+html[data-surface="letter"] .step .n{color:#000}
+html[data-surface="letter"] .rule i{color:#000}
+html[data-surface="letter"] .ex:hover{box-shadow:6px 6px 0 #000}
+html[data-surface="letter"] .srow.head{background:#fff;color:#000;border-bottom:2px solid #000}
+html[data-surface="letter"] .m-page .ln.ch{background:#000}
+html[data-surface="letter"] .ex .meta i,html[data-surface="letter"] .never .chip:hover{color:#000}
+html[data-surface="letter"] #topbar{max-width:880px;margin:18px auto 0;background:transparent}
+html[data-surface="letter"] #topbar .spec-tag{background:transparent;border-color:#6e6e64;color:#2b2b27}
+html[data-surface="letter"] #topbar nav a{color:#1a1a17}
+html[data-surface="letter"] #topbar nav a.gh{background:transparent;border:1.5px solid #1a1a17;color:#1a1a17;}
+html[data-surface="letter"] .wordmark{color:#14140f}
+.margin-note{display:none}
+html[data-surface="letter"] .margin-note{
+  display:block;font-family:var(--mono);font-size:10px;letter-spacing:.06em;color:#000;
+  border:1px dashed #000;border-radius:3px;padding:10px 13px;margin:26px 0 0;
+}
+.margin-note .pen{font-family:"Caveat",var(--serif);font-style:italic}
+
+/* ================================================================
+   MODE: CARD — the site as a stack of ruled 3×5 index cards
+   ================================================================ */
+html[data-surface="card"]{--desk:#B7A284}
+html[data-surface="card"] body{background:var(--desk)}
+html[data-surface="card"] #sheet{
+  max-width:1240px;margin:10px auto 150px;padding:30px 28px;
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));gap:34px 30px;align-items:start;
+}
+html[data-surface="card"] .sec{padding:0;margin:0;max-width:none}
+html[data-surface="card"] .v-card{
+  background:#FFFEF9;border:1px solid #D9D2BC;border-radius:6px;aspect-ratio:5/3;
+  box-shadow:0 14px 24px -12px rgba(60,44,20,.55),0 1.5px 0 rgba(60,44,20,.25);
+  padding:0;overflow:hidden;position:relative;display:flex;flex-direction:column;
+  font-family:var(--grot);font-stretch:66%;
+  background-image:
+    linear-gradient(#E2624F 0,#E2624F 1.5px,transparent 0),
+    repeating-linear-gradient(180deg,transparent 0 27px,#BFD5E4 27px 28px);
+  background-position:0 44px,0 46px;background-repeat:no-repeat,repeat;background-size:100% 100%,100% 100%;
+}
+html[data-surface="card"] .sec:nth-child(odd) .v-card{transform:rotate(-.7deg)}
+html[data-surface="card"] .sec:nth-child(even) .v-card{transform:rotate(.55deg)}
+.v-card{display:none}
+.v-card .ch{
+  font-weight:800;font-size:17px;letter-spacing:.01em;padding:12px 18px 8px;display:flex;align-items:baseline;gap:10px;
+}
+.v-card .ch i{font-family:var(--mono);font-style:normal;font-size:8.5px;letter-spacing:.12em;color:#9a917b;margin-left:auto;font-stretch:100%}
+.v-card .cb{padding:10px 18px 12px;font-size:14px;line-height:28px}
+.v-card .cb p{font-size:14px;line-height:28px}
+.v-card .cb ul{list-style:none}
+.v-card .cb li{line-height:28px;font-size:13.5px}
+.v-card .cb li b{font-weight:800}
+.v-card .cb li .mono{font-family:var(--mono);font-size:10px;font-stretch:100%}
+.v-card .cb .big{font-family:var(--serif);font-stretch:100%;font-size:23px;line-height:28px}
+html[data-surface="card"] #topbar .spec-tag{background:transparent;border-color:#8a7250;color:#4a3a22}
+html[data-surface="card"] #topbar nav a{color:#3c2f1b}
+html[data-surface="card"] #topbar nav a.gh{background:#3c2f1b;color:#EFE6D3}
+html[data-surface="card"] .wordmark{color:#2c2212}
+
+/* ================================================================
+   MODE: RECEIPT — the entire site as a 58mm thermal strip
+   ================================================================ */
+html[data-surface="receipt"]{--desk:#23211D}
+html[data-surface="receipt"] body{background:var(--desk);color:#000}
+html[data-surface="receipt"] #sheet{
+  width:384px;max-width:94vw;margin:8px auto 150px;background:#fff;
+  padding:26px 16px 0;box-shadow:0 0 0 1px rgba(255,255,255,.06),0 30px 70px -20px rgba(0,0,0,.8);
+  animation:feed .9s cubic-bezier(.2,.8,.3,1) 1;
+}
+@keyframes feed{0%{transform:translateY(-46px);clip-path:inset(0 0 12% 0)}100%{transform:translateY(0);clip-path:inset(0 0 0 0)}}
+html[data-surface="receipt"] .sec{max-width:none;padding:6px 0;margin:0}
+html[data-surface="receipt"] body::after{opacity:.09}
+html[data-surface="receipt"] #topbar{justify-content:center;padding:14px}
+html[data-surface="receipt"] #topbar .brand svg rect{fill:#fff;stroke:#fff}
+html[data-surface="receipt"] #topbar .brand svg rect:first-child{fill:#fff}
+html[data-surface="receipt"] #topbar .brand svg path{fill:#23211D}
+html[data-surface="receipt"] .wordmark{color:#EDE9DC}
+html[data-surface="receipt"] .wordmark b{color:#EDE9DC}
+.zig{height:10px;background:#fff;clip-path:polygon(0 0,100% 0,100% 30%,97% 100%,94% 30%,91% 100%,88% 30%,85% 100%,82% 30%,79% 100%,76% 30%,73% 100%,70% 30%,67% 100%,64% 30%,61% 100%,58% 30%,55% 100%,52% 30%,49% 100%,46% 30%,43% 100%,40% 30%,37% 100%,34% 30%,31% 100%,28% 30%,25% 100%,22% 30%,19% 100%,16% 30%,13% 100%,10% 30%,7% 100%,4% 30%,1% 100%,0 30%)}
+.zig.top{transform:scaleY(-1);margin:0 -16px}
+.zig.bot{margin:0 -16px}
+html[data-surface="receipt"] .strip-chrome .logo-band{
+  background:#000;color:#fff;text-align:center;font-family:var(--mono);font-weight:700;
+  font-size:26px;letter-spacing:.3em;padding:12px 0 11px;margin-top:4px;text-indent:.3em;
+}
+.strip-chrome .meta-line{font-family:var(--mono);font-size:9.5px;letter-spacing:.1em;text-align:center;padding:8px 0 2px;line-height:1.9;color:#000}
+.tearline{border-top:2px dashed #000;margin:14px -16px 10px;position:relative}
+.tearline::after{content:"✂";position:absolute;left:10px;top:-9px;background:#fff;font-size:11px;padding:0 4px}
+.qr-wrap{display:flex;flex-direction:column;align-items:center;gap:8px;padding:10px 0 14px}
+.qr-wrap svg{width:128px;height:128px;shape-rendering:crispEdges;background:#fff;padding:10px;outline:2px solid #000}
+.qr-wrap i{font-family:var(--mono);font-style:normal;font-size:9.5px;letter-spacing:.18em}
+
+/* ================================================================
+   MODE: LABEL — one 4×6 sticker; everything else escapes via QR
+   ================================================================ */
+html[data-surface="label"]{--desk:#5A6066}
+html[data-surface="label"] body{background:
+  repeating-linear-gradient(45deg,#5A6066 0 26px,#565C62 26px 52px)}
+html[data-surface="label"] #sheet{
+  width:min(440px,92vw);margin:18px auto 150px;position:relative;
+}
+html[data-surface="label"] .sec{display:none}
+#label-digest{display:none}
+html[data-surface="label"] #label-digest{
+  display:flex;flex-direction:column;aspect-ratio:2/3;background:#fff;border-radius:10px;
+  box-shadow:0 34px 60px -18px rgba(0,0,0,.65);padding:26px 24px 20px;position:relative;overflow:hidden;
+  font-family:var(--mono);color:#000;
+}
+#label-digest::before{ /* liner peel corner */
+  content:"";position:absolute;right:0;bottom:0;width:54px;height:54px;
+  background:linear-gradient(315deg,transparent 49%,#E8E4DA 50%,#CFCabb 60%,#F4F1E9 100%);
+  border-top-left-radius:8px;box-shadow:-3px -3px 8px rgba(0,0,0,.12);
+}
+#label-digest .lb-band{background:#000;color:#fff;text-align:center;font-weight:700;font-size:30px;letter-spacing:.26em;text-indent:.26em;padding:12px 0}
+#label-digest .lb-sub{text-align:center;font-size:10px;letter-spacing:.22em;padding:10px 0 0}
+#label-digest .lb-specs{margin:18px 0 0;border-top:2px solid #000;border-bottom:2px solid #000}
+#label-digest .lb-specs div{display:flex;justify-content:space-between;font-size:11px;letter-spacing:.06em;padding:7px 2px;border-bottom:1px dotted #888}
+#label-digest .lb-specs div:last-child{border-bottom:none}
+#label-digest .lb-qr{flex:1;display:flex;align-items:center;justify-content:center;padding:12px 0 6px}
+#label-digest .lb-qr svg{width:min(46%,168px);height:auto;shape-rendering:crispEdges}
+#label-digest .lb-scan{text-align:center;font-size:10px;letter-spacing:.26em;padding-bottom:12px}
+#label-digest .lb-bar{
+  height:34px;margin:0 -2px;background:repeating-linear-gradient(90deg,#000 0 2px,#fff 2px 5px,#000 5px 6px,#fff 6px 11px,#000 11px 14px,#fff 14px 17px);
+}
+#label-digest .lb-foot{display:flex;justify-content:space-between;font-size:8.5px;letter-spacing:.12em;padding-top:7px;color:#000}
+html[data-surface="label"] #topbar .spec-tag{background:transparent;border-color:#9aa0a6;color:#E8EAED}
+html[data-surface="label"] #topbar nav a{color:#E8EAED}
+html[data-surface="label"] #topbar nav a.gh{background:#E8EAED;color:#2A2E33}
+html[data-surface="label"] .wordmark{color:#F4F1E9}
+
+/* ================================================================
+   MODE: EINK — one 800×480 panel in a bezel on the wall, 1-bit
+   ================================================================ */
+html[data-surface="eink"]{--desk:#CFCBC2}
+html[data-surface="eink"] body{background:linear-gradient(180deg,#D6D2C9,#C6C2B8)}
+html[data-surface="eink"] .sec{display:none}
+#eink-digest{display:none}
+html[data-surface="eink"] #eink-digest{display:block}
+html[data-surface="eink"] #sheet{max-width:980px;margin:4vh auto 150px;padding:0 24px}
+#eink-digest .bezel{
+  background:#26262a;border-radius:18px;padding:26px 26px 34px;
+  box-shadow:0 40px 70px -24px rgba(40,36,28,.6),inset 0 1px 0 rgba(255,255,255,.08);position:relative;
+}
+#eink-digest .bezel::after{
+  content:"7.5\2033  EPD · 800×480 · 1-BIT";position:absolute;bottom:11px;left:0;right:0;text-align:center;
+  font-family:var(--mono);font-size:8px;letter-spacing:.3em;color:#6d6d72;
+}
+#eink-digest .epd{
+  background:#fff;aspect-ratio:5/3;border-radius:3px;color:#000;overflow:hidden;
+  display:grid;grid-template-rows:auto 1fr auto;font-family:var(--grot);
+}
+#eink-digest .e-top{display:flex;justify-content:space-between;align-items:center;border-bottom:3px solid #000;padding:14px 22px 10px;font-family:var(--mono);font-size:clamp(8px,1.2vw,11px);letter-spacing:.18em}
+#eink-digest .e-top .batt{display:inline-flex;gap:2px;align-items:center}
+#eink-digest .e-top .batt i{width:7px;height:11px;background:#000;font-style:normal}
+#eink-digest .e-top .batt i.off{background:var(--dither);background-size:4px 4px}
+#eink-digest .e-main{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);min-height:0}
+#eink-digest .e-right{overflow:hidden}
+#eink-digest .e-left{padding:clamp(10px,3vw,30px) clamp(12px,2.6vw,28px);display:flex;flex-direction:column;justify-content:center}
+#eink-digest .e-left h2{font-family:var(--serif);font-weight:400;font-size:clamp(22px,4.6vw,52px);line-height:1.02;letter-spacing:-.01em}
+#eink-digest .e-left p{font-size:clamp(10px,1.6vw,16px);margin-top:14px;font-weight:600;max-width:22em}
+#eink-digest .e-left .dith{margin-top:18px;height:10px;width:64%;background:var(--dither);background-size:4px 4px}
+#eink-digest .e-right{border-left:3px solid #000;padding:clamp(10px,2.4vw,24px) clamp(10px,2vw,22px);font-family:var(--mono)}
+#eink-digest .e-right h3{font-size:clamp(8px,1.2vw,11px);letter-spacing:.22em;border-bottom:2px solid #000;padding-bottom:7px;margin-bottom:10px}
+#eink-digest .e-right li{list-style:none;font-size:clamp(8.5px,1.35vw,12.5px);line-height:2.05;letter-spacing:.02em;white-space:nowrap}
+#eink-digest .e-right li.done{text-decoration:line-through}
+#eink-digest .e-bot{border-top:3px solid #000;display:flex;justify-content:space-between;padding:9px 22px;font-family:var(--mono);font-size:clamp(7.5px,1.1vw,10px);letter-spacing:.16em}
+html[data-surface="eink"] #topbar .spec-tag{background:transparent}
+
+/* ================================================================
+   MODE: SLIDE — every section is one 16:9 stage; prose → notes
+   ================================================================ */
+html[data-surface="slide"]{--desk:#141413}
+html[data-surface="slide"] body{background:var(--desk)}
+html[data-surface="slide"] #sheet{max-width:none;margin:0;padding:0 0 120px}
+html[data-surface="slide"] .sec{max-width:none;padding:5vh 0;margin:0;display:grid;place-items:center}
+.v-slide{display:none}
+html[data-surface="slide"] .v-slide{
+  display:grid;width:min(92vw,1180px);aspect-ratio:16/9;background:#FBFAF6;border-radius:6px;
+  grid-template-rows:auto 1fr auto;padding:3.2% 4%;box-shadow:0 30px 80px -20px rgba(0,0,0,.8);
+  position:relative;
+}
+.v-slide .sl-kick{font-family:var(--mono);font-size:clamp(8px,1vw,12px);letter-spacing:.26em;color:var(--cobalt);text-transform:uppercase}
+.v-slide .sl-main{display:flex;align-items:center}
+.v-slide h2{font-family:var(--serif);font-weight:400;font-size:clamp(30px,5.4vw,76px);line-height:1.02;letter-spacing:-.015em;max-width:14em}
+.v-slide h2 em{color:var(--cobalt);font-style:italic}
+.v-slide .sl-notes{
+  border-top:1px solid var(--line);padding-top:1.4%;display:flex;gap:14px;align-items:baseline;
+  font-family:var(--mono);font-size:clamp(7.5px,.95vw,11px);line-height:1.7;color:var(--ink-2);
+}
+.v-slide .sl-notes b{flex:none;letter-spacing:.2em;color:var(--tan);font-weight:600}
+.v-slide .sl-pg{position:absolute;top:3.2%;right:4%;font-family:var(--mono);font-size:clamp(8px,1vw,12px);letter-spacing:.2em;color:var(--ink-2)}
+html[data-surface="slide"] #topbar nav a{color:#D8D4C8}
+html[data-surface="slide"] .wordmark{color:#F4F1E9}
+html[data-surface="slide"] #topbar .spec-tag{background:transparent;border-color:#4a4a45;color:#9c9890}
+html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
+
+/* ================================================================
+   RESPONSIVE
+   ================================================================ */
+@media (max-width:1100px){
+  #record{display:none}
+  #record.force{display:block}
+}
+@media (max-width:960px){
+  #hero .v-full{grid-template-columns:1fr;gap:44px}
+  .steps{grid-template-columns:1fr}
+  .rules-grid{grid-template-columns:1fr 1fr}
+  .ex-grid{grid-template-columns:1fr}
+  #install .wrap{grid-template-columns:1fr}
+  .vs{grid-template-columns:1fr}
+  .srow{grid-template-columns:1.2fr 1fr 1.4fr}
+  .srow .hidesm{display:none}
+  html[data-surface="letter"] #sheet{padding:40px 26px}
+  #topbar nav a:not(.gh){display:none}
+  .sec{padding:56px 22px}
+}
+@media (max-width:700px){
+  #topbar{flex-wrap:wrap;gap:10px 14px;padding:14px 18px}
+  #topbar .spec-tag{display:none}
+  .kicker{font-size:9.5px;letter-spacing:.14em}
+  h1.display{font-size:clamp(40px,11.5vw,56px)}
+  .sec{padding:48px 18px}
+}
+@media (max-width:560px){
+  .rules-grid{grid-template-columns:1fr}
+  .surf{padding:7px 9px 6px}
+  .surf .sspec{display:none}
+  .dock-label{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  html{scroll-behavior:auto}
+}
+@media print{
+  #chooser,#record,#crops,#fx{display:none!important}
+  body::after{display:none}
+  body,html{background:#fff!important}
+  html[data-surface="letter"] #sheet{box-shadow:none;margin:0 auto;max-width:none}
+}
+</style>
+</head>
+<body>
+
+<div id="fx" aria-hidden="true"></div>
+<div id="crops" aria-hidden="true"><span class="tl"></span><span class="tr"></span><span class="bl"></span><span class="br"></span></div>
+
+<!-- real QR: github.com/zachphillips/resurface (29×29, EC level M) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="qr29" viewBox="-2 -2 33 33">
+      <rect x="-2" y="-2" width="33" height="33" fill="#fff"/>
+      <path stroke="#000" d="M0 0.5h7m1 0h1m1 0h1m2 0h1m4 0h1m3 0h7m-29 1h1m5 0h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h2m2 0h1m5 0h1m-29 1h1m1 0h3m1 0h1m1 0h2m2 0h2m1 0h1m2 0h1m3 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m3 0h1m1 0h2m3 0h1m2 0h1m1 0h1m1 0h3m1 0h1m-29 1h1m1 0h3m1 0h1m1 0h4m2 0h1m1 0h2m1 0h1m2 0h1m1 0h3m1 0h1m-29 1h1m5 0h1m3 0h2m1 0h2m2 0h2m1 0h1m1 0h1m5 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7m-20 1h2m1 0h4m2 0h3m-21 1h1m2 0h8m1 0h1m1 0h2m1 0h1m1 0h1m1 0h1m2 0h1m1 0h3m-28 1h2m1 0h1m2 0h2m3 0h1m1 0h2m1 0h3m1 0h1m1 0h2m1 0h2m-28 1h1m1 0h1m1 0h1m1 0h2m2 0h1m1 0h1m1 0h5m1 0h1m2 0h2m1 0h1m-27 1h2m1 0h1m1 0h1m2 0h2m2 0h1m1 0h1m2 0h3m1 0h3m1 0h1m2 0h1m-28 1h1m1 0h1m1 0h2m1 0h2m1 0h1m3 0h2m5 0h2m4 0h1m-29 1h1m2 0h1m1 0h1m2 0h1m4 0h6m3 0h7m-28 1h3m1 0h2m2 0h3m3 0h2m1 0h5m1 0h1m1 0h1m1 0h1m-29 1h4m4 0h2m1 0h2m2 0h2m2 0h1m3 0h2m1 0h1m1 0h1m-27 1h2m1 0h2m1 0h4m1 0h1m1 0h2m2 0h3m3 0h1m-26 1h1m1 0h1m1 0h1m2 0h1m1 0h1m2 0h1m2 0h1m2 0h2m4 0h1m1 0h2m-28 1h2m2 0h1m1 0h2m1 0h1m2 0h2m1 0h1m1 0h1m1 0h1m4 0h2m2 0h1m-29 1h3m4 0h2m2 0h1m1 0h1m1 0h2m1 0h2m2 0h1m2 0h2m-27 1h3m2 0h3m1 0h1m3 0h1m2 0h2m2 0h8m-20 1h1m1 0h1m3 0h5m1 0h1m3 0h2m-26 1h7m1 0h2m2 0h1m1 0h4m1 0h2m1 0h1m1 0h2m-26 1h1m5 0h1m1 0h4m3 0h6m3 0h1m2 0h2m-29 1h1m1 0h3m1 0h1m1 0h1m1 0h1m2 0h3m3 0h7m1 0h1m-28 1h1m1 0h3m1 0h1m1 0h4m1 0h6m2 0h1m6 0h1m-29 1h1m1 0h3m1 0h1m8 0h2m1 0h1m1 0h2m1 0h2m1 0h3m-29 1h1m5 0h1m4 0h1m4 0h1m5 0h2m1 0h2m1 0h1m-29 1h7m1 0h1m1 0h1m1 0h1m1 0h3m2 0h2m1 0h1m1 0h1"/>
+    </symbol>
+  </defs>
+</svg>
+
+<header id="topbar">
+  <a class="brand" href="#" aria-label="ReSurface home">
+    <svg viewBox="0 0 64 64" aria-hidden="true">
+      <rect x="20" y="2" width="40" height="40" rx="7" fill="#0B57F0"/>
+      <rect x="12" y="10" width="40" height="40" rx="7" fill="#FFFFFF" stroke="#181818" stroke-width="3"/>
+      <rect x="2" y="18" width="44" height="44" rx="8" fill="#FFFFFF" stroke="#181818" stroke-width="4"/>
+      <path fill="#181818" fill-rule="evenodd" d="M13 28 H29.5 A9.5 9.5 0 0 1 39 37.5 A9.5 9.5 0 0 1 32.8 46.4 L38.8 54 H30.2 L24.8 47 H20 V54 H13 Z M20 34 V41 H28.5 A3.5 3.5 0 0 0 28.5 34 Z"/>
+    </svg>
+    <span class="wordmark"><b>Re</b>Surface</span>
+  </a>
+  <span class="spec-tag" data-not="receipt">Open source · MIT · v0.1.0</span>
+  <nav>
+    <a href="#how" data-not="receipt label eink slide card">How it works</a>
+    <a href="#surfaces" data-not="receipt label eink slide card">Surfaces</a>
+    <a href="#examples" data-not="receipt label eink slide card">Examples</a>
+    <a class="gh" href="https://github.com/zachphillips/resurface" data-not="receipt">GitHub ↗</a>
+  </nav>
+</header>
+
+<main id="sheet">
+
+  <!-- receipt chrome: top -->
+  <div class="strip-chrome" data-only="receipt">
+    <div class="zig top"></div>
+    <div class="logo-band">RESURFACE</div>
+    <div class="meta-line">
+      RESPONSIVE BEYOND THE VIEWPORT<br>
+      PRINTED <span id="printstamp">2026-06-11 06:45</span> · 58MM · 384 DOTS · 1-BIT
+    </div>
+  </div>
+
+  <!-- ============================== HERO ============================== -->
+  <section class="sec" id="hero">
+    <div class="v-full" data-only="screen letter">
+      <div>
+        <p class="kicker">A skill framework for agents · open source</p>
+        <h1 class="display">Responsive beyond <span class="vp">the viewport.</span></h1>
+        <p class="lede">Breakpoints move boxes. <strong>ReSurface re-decides the design <em>and</em> the content</strong> — for letter paper, index cards, receipt printers, e-ink panels, slides, and any surface you can measure. Then it proofs the result at true device fidelity and delivers it there.</p>
+        <div class="ctas">
+          <a class="btn primary" href="https://github.com/zachphillips/resurface"><span class="ico">★</span> View on GitHub</a>
+          <a class="btn ghost" href="#install">Install the skill</a>
+        </div>
+        <p class="demo-hint">THIS PAGE IS THE DEMO — CHOOSE A SURFACE BELOW</p>
+        <div class="margin-note" data-only="letter">
+          ✎ &nbsp;NOTE — you are reading the <b>letter rendition</b>: serif text face, fills traded for hairlines (ink costs money), links printed in full, margins left writable. On purpose.
+        </div>
+      </div>
+      <div class="trio" aria-label="The same daily brief rendered for three surfaces">
+        <span class="same-tag">ONE SOURCE → THREE SURFACES</span>
+        <div class="artifact a-letter">
+          <span class="dim">8.5 × 11 IN · INKJET</span>
+          <h4>Friday — Day Brief</h4>
+          <div class="tl-line b" style="width:62%"></div>
+          <div class="tl-line" style="width:88%"></div>
+          <div class="tl-cols">
+            <div><div class="tl-line"></div><div class="tl-line b" style="width:70%"></div><div class="tl-line"></div><div class="tl-line" style="width:80%"></div><div class="tl-line"></div></div>
+            <div><div class="tl-line b" style="width:60%"></div><div class="tl-line"></div><div class="tl-line" style="width:85%"></div><div class="tl-line"></div><div class="tl-line" style="width:50%"></div></div>
+          </div>
+          <div class="tl-cols">
+            <div><div class="tl-line"></div><div class="tl-line" style="width:75%"></div><div class="tl-line b" style="width:55%"></div></div>
+            <div><div class="tl-line" style="width:90%"></div><div class="tl-line"></div><div class="tl-line" style="width:65%"></div></div>
+          </div>
+          <div class="tl-foot"><span class="tl-qr"></span><i>FULL CALENDAR ↗<br>SCAN — LIVE VERSION</i></div>
+        </div>
+        <div class="artifact a-strip">
+          <span class="dim">58 MM · THERMAL</span>
+          <div class="band">DAY BRIEF</div>
+          <div class="it done">06:00 REVIEW PRS</div>
+          <div class="it done">07:30 SHIP v0.1</div>
+          <div class="hr"></div>
+          <div class="it">09:00 STANDUP</div>
+          <div class="it next">? 11:00 DESIGN PAIR</div>
+          <div class="it next">? 14:00 DEEP WORK</div>
+          <div class="band" style="margin-top:7px">3 LEFT TODAY</div>
+        </div>
+        <div class="artifact a-eink">
+          <span class="dim">7.5″ EPD · 800 × 480</span>
+          <div class="epd">
+            <div class="big">3 MTGS<small>NEXT 09:00 · STANDUP</small></div>
+            <ul><li>09:00 STANDUP</li><li>11:00 DESIGN</li><li>14:00 FOCUS</li></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="v-strip" data-only="receipt">
+      <div class="center" style="padding:8px 0 2px">ONE SOURCE → MANY SURFACES</div>
+      <div class="center">BREAKPOINTS MOVE BOXES.<br>THIS RE-DECIDES THE CONTENT.</div>
+    </div>
+
+    <div class="v-card" data-only="card">
+      <div class="ch">ReSurface <i>CARD 1/8 · 3×5 IN</i></div>
+      <div class="cb">
+        <p class="big">One source. Many surfaces. Always useful.</p>
+        <p>Agents re-decide design + content per surface. This site: 8 cards, condensed face, one idea each.</p>
+      </div>
+    </div>
+
+    <div class="v-slide" data-only="slide">
+      <span class="sl-kick">ReSurface — open source</span><span class="sl-pg">01 / 08</span>
+      <div class="sl-main"><h2>Responsive beyond <em>the viewport.</em></h2></div>
+      <div class="sl-notes"><b>NOTES</b> Open cold, one line, pause. Everything you'd normally cram on this slide moved down here — into presenter notes — which is exactly the decision ReSurface makes when a document becomes a deck.</div>
+    </div>
+  </section>
+
+  <!-- ============================ CONTRAST ============================ -->
+  <section class="sec" id="contrast">
+    <div class="v-full" data-only="screen letter">
+      <div class="sec-head">
+        <span class="sec-num">01</span>
+        <h2 class="sec-title">What breakpoints can’t do</h2>
+        <span class="sec-meta">FORM ∥ CONTENT</span>
+      </div>
+      <div class="vs">
+        <div class="panel dull">
+          <div class="ph"><span>RESPONSIVE DESIGN, 2010 → </span><span>media query</span></div>
+          <pre>@media (max-width: 800px) {
+  .week {
+    grid-template-columns: 1fr;
+  }
+}
+
+<span class="cm">/* all seven days are still here.
+   they're just smaller. and sadder. */</span></pre>
+          <div class="pf">Layout reflows. Content survives untouched — whether it deserves to or not.</div>
+        </div>
+        <div class="panel live">
+          <div class="ph"><span>RESURFACE</span><span>decision record</span></div>
+          <pre>DECISION — calendar → eink-7.5in (800×480 · 1-bit)
+
+· show today + tomorrow, not the week   <span class="ok">[asked: OK]</span>
+· tentative events → outline boxes
+  <span class="cm">(gray does not exist on this panel)</span>
+· full week escapes via QR, bottom-right
+· type ≥ 18px — read from across the kitchen</pre>
+          <div class="pf">Content is re-edited for the surface. On purpose. On the record.</div>
+        </div>
+      </div>
+      <div class="never">
+        <b>DECISIONS A BREAKPOINT WILL NEVER MAKE —</b>
+        <span class="chip">shorten a recipe step</span>
+        <span class="chip">show 2 of 7 days</span>
+        <span class="chip">checkbox → strikethrough</span>
+        <span class="chip">split a song across two cards, never front/back</span>
+        <span class="chip">paragraphs → presenter notes</span>
+        <span class="chip">eight requirements → five better ones</span>
+      </div>
+    </div>
+
+    <div class="v-strip" data-only="receipt">
+      <div class="band">WHAT BREAKPOINTS CAN'T DO</div>
+      <div class="sline"><span>PICK 2 OF 7 DAYS</span><em>✓</em></div>
+      <div class="sline"><span>SHORTEN A RECIPE STEP</span><em>✓</em></div>
+      <div class="sline"><span>CHECKBOX → STRIKETHROUGH</span><em>✓</em></div>
+      <div class="sline"><span>8 REQUIREMENTS → 5 BETTER</span><em>✓</em></div>
+      <div class="sline q">YOU ARE READING THE PROOF.</div>
+    </div>
+
+    <div class="v-card" data-only="card">
+      <div class="ch">Breakpoints move boxes <i>CARD 2/8</i></div>
+      <div class="cb"><ul>
+        <li><b>They can't</b> pick 2 of 7 days,</li>
+        <li>shorten a step, strike a done task,</li>
+        <li>or turn 8 requirements into 5.</li>
+        <li><b>ReSurface can.</b> On the record.</li>
+      </ul></div>
+    </div>
+
+    <div class="v-slide" data-only="slide">
+      <span class="sl-kick">The problem</span><span class="sl-pg">02 / 08</span>
+      <div class="sl-main"><h2>Breakpoints move boxes. They can’t decide <em>what matters.</em></h2></div>
+      <div class="sl-notes"><b>NOTES</b> A media query keeps all seven days of the calendar and shrinks them. An editor shows two days and a QR code. Form decisions and content decisions are the same craft — agents can finally do both.</div>
+    </div>
+  </section>
+
+  <!-- ============================== HOW ============================== -->
+  <section class="sec" id="how">
+    <div class="v-full" data-only="screen letter">
+      <div class="sec-head">
+        <span class="sec-num">02</span>
+        <h2 class="sec-title">Six steps, each on the record</h2>
+        <span class="sec-meta">.resurface/ — durable artifacts</span>
+      </div>
+      <div class="steps">
+        <div class="step"><div class="n">1</div><h4>Capture</h4><p>Why does this exist? Who uses it, where, with what in their hands? Content gets survival tiers: T1 must live, T2 can condense, T3 can drop.</p><span class="art">.resurface/source.md</span></div>
+        <div class="step"><div class="n">2</div><h4>Choose</h4><p>You name a surface. The agent loads its profile: real dimensions, color depth, refresh, ink economy, failure modes — hardware truth, not vibes.</p><span class="art">surfaces/*.md</span></div>
+        <div class="step"><div class="n">3</div><h4>Decide</h4><p>A written decision record: layout in real units, rewrites shown, idioms chosen. Low-confidence calls come back as multiple choice — once, then recorded forever.</p><span class="art">.resurface/decisions/&lt;surface&gt;.md</span></div>
+        <div class="step"><div class="n">4</div><h4>Render</h4><p>A surface-native artifact: print-CSS HTML, 1-bit raster, ESC/POS bytes, fixed-pixel PNG, slides with notes.</p><span class="art">.resurface/out/&lt;surface&gt;/</span></div>
+        <div class="step"><div class="n">5</div><h4>Proof</h4><p>Rasterized at the device’s true pixels and bit depth — 384px wide and 1-bit if that’s what the printer sees — then inspected. Nothing ships on “should work.”</p><span class="art">proof.png · inspected</span></div>
+        <div class="step"><div class="n">6</div><h4>Deliver</h4><p>CUPS, ESC/POS, TRMNL, OpenEPaperLink, PDF, kiosk. Add cron: your day is a sticker on the printer before you’re awake.</p><span class="art">connectors/*.md</span></div>
+      </div>
+    </div>
+
+    <div class="v-strip" data-only="receipt">
+      <div class="band">PROTOCOL</div>
+      <div class="sline"><span>1 CAPTURE</span><em>source.md</em></div>
+      <div class="sline"><span>2 CHOOSE</span><em>profile</em></div>
+      <div class="sline"><span>3 DECIDE</span><em>record</em></div>
+      <div class="sline"><span>4 RENDER</span><em>real units</em></div>
+      <div class="sline"><span>5 PROOF</span><em>384PX·1-BIT</em></div>
+      <div class="sline"><span>6 DELIVER</span><em>print/push</em></div>
+    </div>
+
+    <div class="v-card" data-only="card">
+      <div class="ch">The protocol <i>CARD 3/8</i></div>
+      <div class="cb"><ul>
+        <li>1 <b>Capture</b> intent + tiers <span class="mono">source.md</span></li>
+        <li>2 <b>Choose</b> a surface profile</li>
+        <li>3 <b>Decide</b> — written record</li>
+        <li>4 <b>Render</b> in real units</li>
+        <li>5 <b>Proof</b> at device fidelity</li>
+        <li>6 <b>Deliver</b> — print · push · cron</li>
+      </ul></div>
+    </div>
+
+    <div class="v-slide" data-only="slide">
+      <span class="sl-kick">The protocol</span><span class="sl-pg">03 / 08</span>
+      <div class="sl-main"><h2>Capture → Decide → <em>Proof</em> → Deliver.</h2></div>
+      <div class="sl-notes"><b>NOTES</b> Six steps; four worth saying aloud. The decision record is the contract — re-renders reuse it, and a question answered once is never asked again. Proofing means rasterizing at true device fidelity and actually looking.</div>
+    </div>
+  </section>
+
+  <!-- ============================= RULES ============================= -->
+  <section class="sec" id="rules">
+    <div class="v-full" data-only="screen letter">
+      <div class="sec-head">
+        <span class="sec-num">03</span>
+        <h2 class="sec-title">House rules</h2>
+        <span class="sec-meta">editorial judgment, codified</span>
+      </div>
+      <div class="rules-grid">
+        <div class="rule"><i>RULE 01</i><h4>Physical truth.</h4><p>Real units, from the profile, never from memory. A 58mm receipt is 384 dots. An index card is 3×5 inches. A “12pt glyph” across the kitchen is not 12pt.</p></div>
+        <div class="rule"><i>RULE 02</i><h4>Use-context beats screen size.</h4><p>The guitarist can’t turn a page mid-song. The cook’s hands are wet. Context decides; geometry only constrains.</p></div>
+        <div class="rule"><i>RULE 03</i><h4>Never truncate. Re-edit.</h4><p>An ellipsis is a failure. Rewriting eight requirements as five tighter ones, in the author’s voice, is the job.</p></div>
+        <div class="rule"><i>RULE 04</i><h4>Spend the whole budget.</h4><p>Whitespace on a printed lyric sheet is wasted fidelity — scale up until the content fits the surface, not just on it.</p></div>
+        <div class="rule"><i>RULE 05</i><h4>Translate idioms.</h4><p>Checkboxes on retina; strikethroughs on thermal; outline boxes where gray doesn’t exist; QR codes where links can’t live.</p></div>
+        <div class="rule"><i>RULE 06</i><h4>Proof like it’s hardware.</h4><p>Rasterize at true pixels and bit depth. Look at it. Fix it. Print one before printing twenty.</p></div>
+      </div>
+    </div>
+
+    <div class="v-strip" data-only="receipt">
+      <div class="band">HOUSE RULES</div>
+      <div class="sline"><span>NEVER TRUNCATE — RE-EDIT</span></div>
+      <div class="sline"><span>SPEND THE WHOLE BUDGET</span></div>
+      <div class="sline"><span>PROOF LIKE IT'S HARDWARE</span></div>
+    </div>
+
+    <div class="v-card" data-only="card">
+      <div class="ch">House rules <i>CARD 4/8</i></div>
+      <div class="cb"><ul>
+        <li><b>Physical truth</b> — real units only.</li>
+        <li><b>Context beats geometry.</b></li>
+        <li><b>Never truncate</b> — re-edit.</li>
+        <li><b>Translate idioms</b>, don't copy.</li>
+        <li><b>Proof</b> at device fidelity.</li>
+      </ul></div>
+    </div>
+
+    <div class="v-slide" data-only="slide">
+      <span class="sl-kick">House rules</span><span class="sl-pg">04 / 08</span>
+      <div class="sl-main"><h2>Never truncate. <em>Re-edit.</em></h2></div>
+      <div class="sl-notes"><b>NOTES</b> The framework's hardest rule. Dumb truncation is what deterministic pipelines do; an editor rewrites. Eight requirements become five better ones — and the rewrite is shown in the decision record, where the author can veto it.</div>
+    </div>
+  </section>
+
+  <!-- =========================== SURFACES ============================ -->
+  <section class="sec" id="surfaces">
+    <div class="v-full" data-only="screen letter">
+      <div class="sec-head">
+        <span class="sec-num">04</span>
+        <h2 class="sec-title">The surface library</h2>
+        <span class="sec-meta">13 profiles · write your own</span>
+      </div>
+      <div class="stable">
+        <div class="srow head"><span>SURFACE</span><span>SPEC</span><span class="hidesm">COLOR</span><span class="hidesm">CAPABILITY</span><span>WHAT CHANGES</span></div>
+        <div class="srow"><span class="sn">Letter / A4<small>paper-letter</small></span><span class="mono">8.5×11IN · 210×297MM</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">WRITABLE</span><span class="cap">INK $</span></span><span class="what">fills → hairlines, margins stay writable, links printed in full</span></div>
+        <div class="srow"><span class="sn">Index card<small>paper-index-card</small></span><span class="mono">3×5IN · 4×6IN</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">WRITABLE</span><span class="cap">DECK</span></span><span class="what">condensed face, one unit of meaning per card, never front/back</span></div>
+        <div class="srow"><span class="sn">Brochure<small>paper-brochure-half-fold</small></span><span class="mono">8.5×11 → 4 PANELS</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">FOLD</span></span><span class="what">imposition-aware: panel order ≠ page order, cover earns its panel</span></div>
+        <div class="srow"><span class="sn">Thermal receipt<small>thermal-receipt</small></span><span class="mono">58/80MM · 384/576 DOTS</span><span class="hidesm"><span class="cap mono1">1-BIT</span></span><span class="hidesm"><span class="cap">FREE INK</span><span class="cap">TEAR</span></span><span class="what">strikethroughs for done, inverted bands, tear-aware segments</span></div>
+        <div class="srow"><span class="sn">Label sticker<small>thermal-label-4x6</small></span><span class="mono">4×6IN · 203 DPI</span><span class="hidesm"><span class="cap mono1">1-BIT</span></span><span class="hidesm"><span class="cap">STICKY</span><span class="cap">QR</span></span><span class="what">glanceable hierarchy; everything secondary escapes via QR</span></div>
+        <div class="srow"><span class="sn">Boarding pass<small>boarding-pass</small></span><span class="mono">~8×3.25IN · 2 PERFS</span><span class="hidesm"><span class="cap mono1">1-BIT</span></span><span class="hidesm"><span class="cap">STUB</span></span><span class="what">stubs survive separation — T1 lives on the stub</span></div>
+        <div class="srow"><span class="sn">E-ink small<small>eink-small</small></span><span class="mono">296×128 → 800×480</span><span class="hidesm"><span class="cap mono1">1-BIT/4-GRAY</span></span><span class="hidesm"><span class="cap">SLOW</span><span class="cap">STILL</span></span><span class="what">contrast-first, designed for stillness, today + tomorrow not the week</span></div>
+        <div class="srow"><span class="sn">E-ink large<small>eink-large</small></span><span class="mono">10.3–13.3IN · 16-GRAY</span><span class="hidesm"><span class="cap">16-GRAY</span></span><span class="hidesm"><span class="cap">WALL</span></span><span class="what">real typography rewarded; rooted Kindles welcome</span></div>
+        <div class="srow"><span class="sn">Phone<small>screen-phone</small></span><span class="mono">360–430 CSS PX</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">TOUCH</span><span class="cap">TTS</span></span><span class="what">cards over scroll, tap-to-expand, listen instead of read</span></div>
+        <div class="srow"><span class="sn">TV / wall<small>screen-tv</small></span><span class="mono">1080P+ @ 3–5M</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">AMBIENT</span></span><span class="what">type ≥32px, overscan-safe, glanceable ambient density</span></div>
+        <div class="srow"><span class="sn">Desktop<small>screen-desktop</small></span><span class="mono">1920×1080+</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">POINTER</span></span><span class="what">usually the source — the riches every other surface re-budgets</span></div>
+        <div class="srow"><span class="sn">Slide deck<small>slide-16x9</small></span><span class="mono">16:9 · 1920×1080</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">NOTES</span></span><span class="what">paragraphs move to presenter notes; one idea per slide</span></div>
+        <div class="srow"><span class="sn">Terminal<small>terminal-cli</small></span><span class="mono">80×24 · MONO GRID</span><span class="hidesm"><span class="cap mono1">ANSI</span></span><span class="hidesm"><span class="cap">BOX-DRAW</span></span><span class="what">the original constrained surface — box rules and block sparklines</span></div>
+      </div>
+      <p class="stable-note">7 surfaces are skinned into this page · all 13 ship as profiles · add yours with <a href="https://github.com/zachphillips/resurface/blob/main/skills/resurface/surfaces/_schema.md">surfaces/_schema.md</a> — measure first, design second.</p>
+    </div>
+
+    <div class="v-strip" data-only="receipt">
+      <div class="band">SURFACE LIBRARY</div>
+      <div class="sline"><span>LETTER</span><em>8.5×11 · INK$</em></div>
+      <div class="sline"><span>INDEX CARD</span><em>3×5 · DECK</em></div>
+      <div class="sline inv"><span>RECEIPT ◀ YOU ARE HERE</span><em>384 DOTS</em></div>
+      <div class="sline"><span>LABEL</span><em>4×6 · QR</em></div>
+      <div class="sline"><span>E-INK</span><em>800×480 · SLOW</em></div>
+      <div class="sline"><span>SLIDE</span><em>16:9 · NOTES</em></div>
+      <div class="sline"><span>TERMINAL</span><em>80×24 · ANSI</em></div>
+      <div class="sline q">+6 MORE IN THE REPO</div>
+    </div>
+
+    <div class="v-card" data-only="card">
+      <div class="ch">13 surfaces shipped <i>CARD 5/8</i></div>
+      <div class="cb"><ul>
+        <li>Letter · A4 · index card · brochure</li>
+        <li>receipt · label · boarding pass</li>
+        <li>e-ink S/L · phone · TV · desktop</li>
+        <li>slides · terminal — <b>+ yours</b>:</li>
+        <li><span class="mono">surfaces/_schema.md</span></li>
+      </ul></div>
+    </div>
+
+    <div class="v-slide" data-only="slide">
+      <span class="sl-kick">The library</span><span class="sl-pg">05 / 08</span>
+      <div class="sl-main"><h2>A surface is a <em>budget</em>: area, color, attention.</h2></div>
+      <div class="sl-notes"><b>NOTES</b> Thirteen profiles ship: paper, cards, brochure, thermal, labels, boarding passes, e-ink, phone, TV, desktop, slides, terminal. Each one is hardware truth — dots, millimeters, failure modes — that an agent can compute layout from.</div>
+    </div>
+  </section>
+
+  <!-- =========================== EXAMPLES ============================ -->
+  <section class="sec" id="examples">
+    <div class="v-full" data-only="screen letter">
+      <div class="sec-head">
+        <span class="sec-num">05</span>
+        <h2 class="sec-title">Worked examples</h2>
+        <span class="sec-meta">decision records included</span>
+      </div>
+      <div class="ex-grid">
+        <a class="ex" href="https://github.com/zachphillips/resurface/tree/main/examples/lyrics-to-letter-and-cards">
+          <div class="stage">
+            <div class="m-page">
+              <h5>Red River Waltz</h5>
+              <div class="cols">
+                <div><div class="ln ch"></div><div class="ln"></div><div class="ln" style="width:80%"></div><div class="ln ch" style="width:40%"></div><div class="ln"></div><div class="ln" style="width:70%"></div><div class="ln ch"></div><div class="ln" style="width:85%"></div><div class="ln"></div></div>
+                <div><div class="ln ch" style="width:45%"></div><div class="ln"></div><div class="ln" style="width:75%"></div><div class="ln"></div><div class="ln ch" style="width:60%"></div><div class="ln" style="width:90%"></div><div class="ln"></div><div class="ln" style="width:65%"></div></div>
+              </div>
+            </div>
+            <div class="m-card2"><div class="ln" style="width:70%"></div><div class="ln"></div><div class="ln" style="width:85%"></div><i>1/2</i></div>
+          </div>
+          <div class="meta"><i>PAPER-LETTER · PAPER-INDEX-CARD</i><h4>Lyrics → one page, then cards</h4><p>Type maximized until the song fills one side — the guitarist can’t turn pages. The repertoire re-segments to 3×5 cards: two cards side by side, never front/back.</p></div>
+        </a>
+        <a class="ex" href="https://github.com/zachphillips/resurface/tree/main/examples/agent-dashboard-to-receipt">
+          <div class="stage">
+            <div class="m-strip">
+              <div class="bd">PROJECTS</div>
+              <div class="it done">SHIP AUTH FLOW</div>
+              <div class="it done">FIX CI FLAKE</div>
+              <div class="hr2"></div>
+              <div class="it">REVIEW PR #214</div>
+              <div class="it">? MIGRATE DB</div>
+              <div class="bd" style="margin-top:5px">RESURFACE</div>
+              <svg class="qr"><use href="#qr29"/></svg>
+            </div>
+          </div>
+          <div class="meta"><i>THERMAL-RECEIPT · 384 DOTS · 1-BIT</i><h4>Dashboard → thermal strip</h4><p>Gray “proposed next” can’t exist in 1-bit: it becomes indent + “?”. Checked boxes smear at 203 DPI: they become thin strikethroughs. A heavy rule splits done from next.</p></div>
+        </a>
+        <a class="ex" href="https://github.com/zachphillips/resurface/tree/main/examples/recipe-to-fridge-eink">
+          <div class="stage">
+            <div class="m-epd">
+              <div class="scr">
+                <div><div class="deg">180°<small>BRAISE · 2H10 TOTAL</small></div></div>
+                <div class="st">□ CHICKEN THIGHS<br>□ PRESERVED LEMON<br>□ OLIVES · STOCK<br>□ ONION · SAFFRON</div>
+              </div>
+            </div>
+          </div>
+          <div class="meta"><i>EINK-SMALL · 648×480 · 1-BIT</i><h4>Recipe → fridge e-ink</h4><p>Prose steps rewritten to eight glanceable imperatives, sized for wet hands at 1.5 meters. Ingredients run down the right edge — where a cook’s eye actually goes.</p></div>
+        </a>
+      </div>
+    </div>
+
+    <div class="v-strip" data-only="receipt">
+      <div class="band">SHIPPED EXAMPLES</div>
+      <div class="sline done"><span>LYRICS → LETTER + CARDS</span></div>
+      <div class="sline done"><span>DASHBOARD → THIS STRIP</span></div>
+      <div class="sline done"><span>RECIPE → FRIDGE E-INK</span></div>
+      <div class="sline q">STRIKE = SHIPPED. THE IDIOM WORKS.</div>
+    </div>
+
+    <div class="v-card" data-only="card">
+      <div class="ch">Worked examples <i>CARD 6/8</i></div>
+      <div class="cb"><ul>
+        <li><b>Lyrics</b> → 1 page max-type + 3×5 cards</li>
+        <li><b>Dashboard</b> → 384-dot thermal strip</li>
+        <li><b>Recipe</b> → 648×480 fridge e-ink</li>
+        <li>each with its decision record →</li>
+        <li><span class="mono">examples/*/decisions/</span></li>
+      </ul></div>
+    </div>
+
+    <div class="v-slide" data-only="slide">
+      <span class="sl-kick">Proof</span><span class="sl-pg">06 / 08</span>
+      <div class="sl-main"><h2>Lyrics, dashboards, recipes — <em>already resurfaced.</em></h2></div>
+      <div class="sl-notes"><b>NOTES</b> Three worked examples ship in the repo, each with source capture, decision record, and the rendered artifact. The decision records read like a designer's notebook — that's the deliverable, not a side effect.</div>
+    </div>
+  </section>
+
+  <!-- ============================ INSTALL ============================ -->
+  <section class="sec" id="install">
+    <div class="v-full" data-only="screen letter">
+      <div class="sec-head">
+        <span class="sec-num">06</span>
+        <h2 class="sec-title">Install it, then talk to it</h2>
+        <span class="sec-meta">markdown all the way down</span>
+      </div>
+      <div class="wrap">
+        <div>
+          <div class="codebox">
+            <div class="cb-head"><i></i><i></i><i></i><span>INSTALL — 3 WAYS</span></div>
+            <pre><span class="cm"># as a Claude Code plugin</span>
+<span class="hl">/plugin install resurface</span>
+
+<span class="cm"># or as a plain skill, per-user</span>
+git clone https://github.com/zachphillips/resurface
+cp -r resurface/skills/resurface ~/.claude/skills/
+
+<span class="cm"># or per-project</span>
+cp -r resurface/skills/resurface .claude/skills/</pre>
+          </div>
+          <p class="stable-note" style="margin-top:14px">OPTIONAL TOOLING — chromium (proofs) · imagemagick (bit depth) · zbar (QR checks) · python-escpos (thermal) · CUPS (paper)</p>
+        </div>
+        <div>
+          <div class="conns">
+            <span class="conn">CUPS</span><span class="conn">ESC/POS</span><span class="conn">TRMNL</span><span class="conn">OPENEPAPERLINK</span><span class="conn">PDF</span><span class="conn">KIOSK</span>
+          </div>
+          <div class="cron-note">
+            <b>THE MORNING STICKER</b>
+            “Every morning at 6:45, print my day on the label printer: schedule, three priorities, weather, one QR to the full calendar.” — a cron job, a connector, and a decision record. The sticker is on the printer before you’re awake.
+          </div>
+          <div class="cron-note" style="border-left-color:var(--tan)">
+            <b>THEN JUST SAY THINGS LIKE</b>
+            “Print my repertoire on index cards — I can’t flip cards mid-song.” · “Put tonight’s recipe on the fridge e-ink.” · “Make this proposal a 12-slide deck; prose goes to notes.”
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="v-strip" data-only="receipt">
+      <div class="band">INSTALL</div>
+      <div class="center" style="padding:6px 0">
+        /plugin install resurface<br>
+        — OR —<br>
+        git clone + cp -r skills/resurface<br>
+        → ~/.claude/skills/
+      </div>
+    </div>
+
+    <div class="v-card" data-only="card">
+      <div class="ch">Install <i>CARD 7/8</i></div>
+      <div class="cb"><ul>
+        <li><span class="mono">/plugin install resurface</span></li>
+        <li>or clone + copy <span class="mono">skills/resurface</span></li>
+        <li>connectors: CUPS · ESC/POS · TRMNL</li>
+        <li>OpenEPaperLink · PDF · kiosk</li>
+        <li>cron + connector = morning sticker</li>
+      </ul></div>
+    </div>
+
+    <div class="v-slide" data-only="slide">
+      <span class="sl-kick">Get it</span><span class="sl-pg">07 / 08</span>
+      <div class="sl-main"><h2 style="font-family:var(--mono);font-size:clamp(20px,3.6vw,52px);letter-spacing:0">/plugin install resurface</h2></div>
+      <div class="sl-notes"><b>NOTES</b> One plugin, thirteen surface profiles, six connectors, three worked examples. MIT licensed. The skill is markdown all the way down — judgment is the engine; code only lives at the edges, where pixels meet hardware.</div>
+    </div>
+  </section>
+
+  <!-- ======================= EINK / LABEL DIGESTS ===================== -->
+  <section id="eink-digest" aria-label="E-ink rendition">
+    <div class="bezel">
+      <div class="epd">
+        <div class="e-top">
+          <span>RESURFACE · T1 DIGEST</span>
+          <span class="batt"><i></i><i></i><i></i><i class="off"></i>&nbsp;PANEL OK</span>
+        </div>
+        <div class="e-main">
+          <div class="e-left">
+            <h2>Responsive beyond the viewport.</h2>
+            <p>Agents re-decide design + content per surface, proof at device fidelity, then deliver.</p>
+            <div class="dith" aria-hidden="true"></div>
+          </div>
+          <div class="e-right">
+            <h3>RENDERED HERE</h3>
+            <ul>
+              <li class="done">CAPTURE SOURCE</li>
+              <li class="done">LOAD PROFILE 800×480</li>
+              <li class="done">GRAY → OUTLINE/DITHER</li>
+              <li>T1 ONLY · WEEK VIA QR</li>
+              <li>REFRESH: ON THE HOUR</li>
+              <li>REPO: GITHUB → /RESURFACE</li>
+            </ul>
+          </div>
+        </div>
+        <div class="e-bot">
+          <span>LAST REFRESH 06:45 · NEXT 07:00</span>
+          <span>DESIGNED FOR STILLNESS — NOTHING HERE MOVES</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="label-digest" aria-label="Label sticker rendition">
+    <div class="lb-band">RESURFACE</div>
+    <div class="lb-sub">SURFACE-AWARE PUBLISHING FOR AGENTS</div>
+    <div class="lb-specs">
+      <div><span>RE-DECIDES</span><span>FORM + CONTENT</span></div>
+      <div><span>SURFACES</span><span>PAPER · EINK · THERMAL · 16:9</span></div>
+      <div><span>PROOFS AT</span><span>TRUE DEVICE FIDELITY</span></div>
+      <div><span>LICENSE</span><span>MIT · OPEN SOURCE</span></div>
+    </div>
+    <div class="lb-qr"><svg viewBox="-2 -2 33 33"><use href="#qr29"/></svg></div>
+    <div class="lb-scan">SCAN — EVERYTHING ELSE LIVES IN THE REPO</div>
+    <div class="lb-bar" aria-hidden="true"></div>
+    <div class="lb-foot"><span>4×6 IN · 203 DPI · 1-BIT</span><span>T1 ONLY, RUTHLESSLY</span><span>v0.1.0</span></div>
+  </section>
+
+  <!-- receipt chrome: bottom -->
+  <div class="strip-chrome" data-only="receipt">
+    <div class="tearline"></div>
+    <div class="qr-wrap">
+      <svg viewBox="-2 -2 33 33"><use href="#qr29"/></svg>
+      <i>SCAN FOR REPO</i>
+    </div>
+    <div class="center" style="padding-bottom:14px">
+      MIT LICENSE · NO INK WAS WASTED<br>
+      THANK YOU — COME BACK AT FULL WIDTH
+    </div>
+    <div class="zig bot"></div>
+  </div>
+
+  <!-- ============================ COLOPHON =========================== -->
+  <footer class="sec" id="colophon">
+    <div class="v-full" data-only="screen letter">
+      <p class="cl"><b>ReSurface</b> is MIT-licensed and built to be contributed to: surface profiles and connectors are the community layer. Rooted Kindles, e-paper price tags, dot-matrix printers, departure boards — if you can describe its physical truth, agents can design for it.</p>
+      <nav>
+        <a href="https://github.com/zachphillips/resurface">GitHub ↗</a>
+        <a href="https://github.com/zachphillips/resurface/tree/main/docs">Documentation</a>
+        <a href="https://github.com/zachphillips/resurface/blob/main/CONTRIBUTING.md">Contributing</a>
+        <a href="https://github.com/zachphillips/resurface/tree/main/examples">Examples</a>
+      </nav>
+      <p class="fineprint">SET IN INSTRUMENT SERIF, ARCHIVO &amp; SPLINE SANS MONO · THE PAGE YOU ARE READING IS THE DEMO: ONE SOURCE, SEVEN SURFACES · PRINT DIALOG IS REAL — TRY ⌘P ON THE LETTER RENDITION</p>
+    </div>
+
+    <div class="v-card" data-only="card">
+      <div class="ch">Colophon <i>CARD 8/8</i></div>
+      <div class="cb"><ul>
+        <li>MIT · open source</li>
+        <li>surfaces + connectors = community</li>
+        <li><span class="mono">github.com/zachphillips/resurface</span></li>
+        <li><b>The meaning survives the move.</b></li>
+      </ul></div>
+    </div>
+
+    <div class="v-slide" data-only="slide">
+      <span class="sl-kick">Close</span><span class="sl-pg">08 / 08</span>
+      <div class="sl-main"><h2>The meaning <em>survives the move.</em></h2></div>
+      <div class="sl-notes"><b>NOTES</b> That's the prime directive — not the pixels, not the word count. github.com/zachphillips/resurface. Thank you.</div>
+    </div>
+  </footer>
+
+</main>
+
+<aside id="record" class="hide" aria-live="polite">
+  <h3>DECISION RECORD <em id="rec-surface">SCREEN</em></h3>
+  <ul id="record-body"></ul>
+</aside>
+
+<nav id="chooser" aria-label="Surface chooser — reskins this entire page">
+  <span class="dock-label">SURFACE</span>
+  <button class="surf" data-mode="screen" aria-pressed="true">
+    <span class="key">1</span>
+    <svg viewBox="0 0 24 24"><rect x="2.5" y="4" width="19" height="13" rx="1.5"/><path d="M9 20.5h6M12 17v3.5"/></svg>
+    <span class="sname">Screen</span><span class="sspec">1920×1080</span>
+  </button>
+  <button class="surf" data-mode="letter" aria-pressed="false">
+    <span class="key">2</span>
+    <svg viewBox="0 0 24 24"><path d="M5 2.5h10l4 4v15H5z"/><path d="M15 2.5v4h4M8 12h8M8 15.5h8M8 8.5h4"/></svg>
+    <span class="sname">Letter</span><span class="sspec">8.5×11 IN</span>
+  </button>
+  <button class="surf" data-mode="card" aria-pressed="false">
+    <span class="key">3</span>
+    <svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="12.5" rx="1.5"/><path d="M2.5 9.5h19M5.5 13h13M5.5 15.5h9"/></svg>
+    <span class="sname">Cards</span><span class="sspec">3×5 IN ×8</span>
+  </button>
+  <button class="surf" data-mode="receipt" aria-pressed="false">
+    <span class="key">4</span>
+    <svg viewBox="0 0 24 24"><path d="M6.5 2.5h11V19l-2-1.6-1.8 1.6-1.7-1.6-1.7 1.6L8.5 17.4 6.5 19z"/><path d="M9 7h6M9 10h6M9 13h4"/></svg>
+    <span class="sname">Receipt</span><span class="sspec">58MM · 1-BIT</span>
+  </button>
+  <button class="surf" data-mode="label" aria-pressed="false">
+    <span class="key">5</span>
+    <svg viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1.5"/><rect x="8" y="6" width="8" height="3"/><rect x="8.5" y="11.5" width="7" height="7"/></svg>
+    <span class="sname">Label</span><span class="sspec">4×6 IN</span>
+  </button>
+  <button class="surf" data-mode="eink" aria-pressed="false">
+    <span class="key">6</span>
+    <svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2.5"/><rect x="5" y="8" width="14" height="8" rx=".5"/><path d="M7 12h6" stroke-dasharray="1.5 1.5"/></svg>
+    <span class="sname">E-ink</span><span class="sspec">800×480</span>
+  </button>
+  <button class="surf" data-mode="slide" aria-pressed="false">
+    <span class="key">7</span>
+    <svg viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="12" rx="1"/><path d="M2.5 5l3-2.5h13l3 2.5M10 9.5l4 1.7-4 1.7z"/></svg>
+    <span class="sname">Slide</span><span class="sspec">16:9</span>
+  </button>
+  <button id="rec-toggle" aria-pressed="false" title="Show the decision record for this surface">REC</button>
+</nav>
+
+<script>
+(function(){
+  const MODES = ['screen','letter','card','receipt','label','eink','slide'];
+  const root = document.documentElement;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const RECORDS = {
+    screen: [
+      ['spec','CANVAS 1920×1080+ · FULL COLOR · POINTER'],
+      ['','budget: rich everywhere — spend on depth'],
+      ['','triage: nothing dropped (T1+T2+T3)'],
+      ['','type: display serif + grotesque + mono specs'],
+      ['','idioms: hover, density, crop marks'],
+    ],
+    letter: [
+      ['spec','CANVAS 8.5×11 IN · INK COSTLY · WRITABLE'],
+      ['','fills → hairlines (ink economy)'],
+      ['','body → text serif at 17px/1.6'],
+      ['','links → printed in full, no tap targets'],
+      ['','margins left writable ✎ on purpose'],
+      ['','triage: T1+T2 · T3 stays online'],
+    ],
+    card: [
+      ['spec','CANVAS 3×5 IN × 8 CARDS · WRITABLE'],
+      ['','one idea per card, never mid-thought'],
+      ['','face → condensed grotesque (wdth 66)'],
+      ['','sequence is information: n/8 on every card'],
+      ['','ruled stock: red head rule, blue feints'],
+      ['','triage: T1 + tightened T2'],
+    ],
+    receipt: [
+      ['spec','CANVAS 384 DOTS · 58MM · 1-BIT · FREE INK'],
+      ['','gray → indent + “?” (gray doesn’t exist)'],
+      ['','checkbox → thin strikethrough'],
+      ['','sections → inverted bands + tear segments'],
+      ['','overflow → QR (it scans — try it)'],
+      ['','triage: T1 only'],
+    ],
+    label: [
+      ['spec','CANVAS 4×6 IN · 203 DPI · 1-BIT · ADHESIVE'],
+      ['','one sticker = the whole pitch'],
+      ['','headline ≥ glance size at arm’s length'],
+      ['','everything secondary → QR'],
+      ['','triage: T1, ruthlessly'],
+    ],
+    eink: [
+      ['spec','CANVAS 800×480 · 7.5″ EPD · 1-BIT · SLOW'],
+      ['','no grays: done → strikethrough, dither for tone'],
+      ['','refresh in seconds → designed for stillness'],
+      ['','contrast is survival: 3px rules minimum'],
+      ['','triage: T1 digest · the rest stays on desk'],
+    ],
+    slide: [
+      ['spec','CANVAS 16:9 · BACK-OF-ROOM TEST'],
+      ['','paragraphs → presenter notes (read them)'],
+      ['','one idea per slide · type ≥ 24pt'],
+      ['','count: 8 slides from 8 sections'],
+      ['','triage: T1 spoken · T2 in notes · T3 cut'],
+    ],
+  };
+
+  const TITLES = {
+    screen:'ReSurface — Responsive beyond the viewport',
+    letter:'ReSurface — Letter rendition · 8.5×11 in',
+    card:'ReSurface — 8 index cards · 3×5 in',
+    receipt:'ReSurface — 58mm thermal strip · 384 dots',
+    label:'ReSurface — 4×6 label · 203 dpi',
+    eink:'ReSurface — 800×480 e-ink panel',
+    slide:'ReSurface — 8 slides · 16:9',
+  };
+
+  const record = document.getElementById('record');
+  const recBody = document.getElementById('record-body');
+  const recSurface = document.getElementById('rec-surface');
+  const recToggle = document.getElementById('rec-toggle');
+  const fx = document.getElementById('fx');
+  let recOpen = false;
+
+  function renderRecord(mode){
+    recSurface.textContent = mode.toUpperCase();
+    recBody.innerHTML = RECORDS[mode].map(([cls,txt]) =>
+      `<li${cls ? ` class="${cls}"` : ''}>${txt}</li>`).join('');
+  }
+
+  function applyVisibility(mode){
+    document.querySelectorAll('[data-only]').forEach(el => {
+      el.hidden = !el.dataset.only.split(' ').includes(mode);
+    });
+    document.querySelectorAll('[data-not]').forEach(el => {
+      el.hidden = el.dataset.not.split(' ').includes(mode);
+    });
+  }
+
+  function setMode(mode, opts){
+    if (!MODES.includes(mode)) mode = 'screen';
+    const prev = root.dataset.surface;
+    if (prev === mode && !(opts && opts.force)) return;
+
+    if (mode === 'eink' && !reduced){ fx.classList.remove('flash'); void fx.offsetWidth; fx.classList.add('flash'); }
+
+    root.dataset.surface = mode;
+    applyVisibility(mode);
+    renderRecord(mode);
+    document.title = TITLES[mode];
+
+    document.querySelectorAll('.surf').forEach(b =>
+      b.setAttribute('aria-pressed', String(b.dataset.mode === mode)));
+
+    if (!(opts && opts.noscroll)) window.scrollTo({top:0, behavior: reduced ? 'auto' : 'smooth'});
+    try { localStorage.setItem('resurface-mode', mode); } catch(e){}
+    if (history.replaceState) history.replaceState(null,'', mode==='screen' ? location.pathname : '#'+mode);
+
+    if (recOpen || !record.classList.contains('hide')){
+      record.classList.remove('pulse'); void record.offsetWidth; record.classList.add('pulse');
+    }
+  }
+
+  document.querySelectorAll('.surf').forEach(btn =>
+    btn.addEventListener('click', () => setMode(btn.dataset.mode)));
+
+  recToggle.addEventListener('click', () => {
+    recOpen = !recOpen;
+    record.classList.toggle('hide', !recOpen);
+    record.classList.toggle('force', recOpen);
+    recToggle.setAttribute('aria-pressed', String(recOpen));
+  });
+
+  addEventListener('keydown', e => {
+    if (e.target.matches('input,textarea') || e.metaKey || e.ctrlKey || e.altKey) return;
+    const i = parseInt(e.key, 10);
+    if (i >= 1 && i <= 7) setMode(MODES[i-1]);
+    if (e.key === 'r' || e.key === 'R') recToggle.click();
+  });
+
+  // receipt timestamp
+  const d = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const stamp = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  const ps = document.getElementById('printstamp');
+  if (ps) ps.textContent = stamp;
+
+  // initial mode: hash > storage > screen
+  let initial = (location.hash || '').replace('#','');
+  if (!MODES.includes(initial)){
+    try { initial = localStorage.getItem('resurface-mode') || 'screen'; } catch(e){ initial = 'screen'; }
+  }
+  setMode(MODES.includes(initial) ? initial : 'screen', {force:true, noscroll:true});
+
+  // open the record by default on wide screens, first visit
+  if (innerWidth >= 1100){
+    recOpen = true; record.classList.remove('hide');
+    recToggle.setAttribute('aria-pressed','true');
+  }
+})();
+</script>
+</body>
+</html>
