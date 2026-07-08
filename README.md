@@ -26,6 +26,7 @@ different output surface — then actually get it there.
 | Thermal receipt | 58/80mm · 384/576 dots · 1-bit | solid blacks, strikethroughs, tear-aware segments |
 | Label sticker | 4×6in · 203 DPI · 1-bit | QR-heavy, glanceable, free "ink" |
 | E-ink panel | e.g. 800×480 · 1–16 gray | contrast-first, dithered, slow-refresh calm |
+| TRMNL e-ink | 7.5in 800×480 1-bit · 10.3in 1872×1404 gray | pull-fed, playlist-aware, as-of stamped |
 | Slide deck | 16:9 | paragraphs become notes; bullets surface |
 | Phone | touch · portrait | cards, gestures, listen-instead-of-read |
 | TV / wall | 1080p+ at 3–5m | distance typography, ambient density |
