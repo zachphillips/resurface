@@ -12,8 +12,9 @@ ink-economy: n/a
 
 # Large e-ink - typographer's wall
 
-A 10-13in e-paper panel 16 grays 200-300 PPI renders type print quality and
-holds it zero power. This one electronic surface rewards real typographic care:
+A 10-13in e-paper panel with 16 grays renders type at print quality (227-300
+PPI on the 10.3in and reader classes; the 13.3in 1600x1200 class is ~150 PPI —
+budget type like a 150 PPI surface there) and holds it at zero power. This one electronic surface rewards real typographic care:
 set it like broadsheet page, hang like framed print, let it quietly be correct
 all day.
 
@@ -35,8 +36,9 @@ panel displays it on next device wake, playlist slot, or refresh cadence.
 ## Fidelity budget
 
 Rich in resolution, gray nuance, persistence; starved color and motion.
-Unusually electronic surface, budget surplus *typographic*: at 227-300 PPI you
-can spend on optical size, real hierarchy, dense but readable tables. Because
+Unusually electronic surface, budget surplus *typographic*: at 227-300 PPI
+spend on optical size, real hierarchy, dense but readable tables; on the
+150 PPI 13.3in class drop hairlines and step body sizes up one notch. Because
 image persists without power, freshness is editorial constraint, not UI chrome.
 
 ## What it's good for
@@ -112,7 +114,8 @@ screensaver-swap methods flash by default). See `connectors/`.
 ## Proofing
 
 Posterize render 16 gray levels inspect 100%: type still smooth, tonal steps
-still distinct after quantization. Diff consecutive renders - static chrome
-pixel-identical. wall mounts, view at ~25% size to simulate 3m. Read type
-closely: if it doesn't look like print, surface being wasted.
-`references/proofing.md`.
+still distinct after quantization. Run the canonical checklist from
+`references/proofing.md` — edges, smallest text, line breaks, contrast
+survivors, segmentation, QR-like artifacts — then diff consecutive renders
+(static chrome pixel-identical). Wall mounts: view at ~25% size to simulate
+3m. Read type closely: if it doesn't look like print, surface being wasted.
