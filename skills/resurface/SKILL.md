@@ -184,6 +184,8 @@ screen design.
   faces, line-break hygiene.
 - `references/ink-color-and-dither.md` — monochrome strategy, dithering, ink economy.
 - `references/qr-codes.md` — QR as the print-surface escape hatch.
+- `references/rotating-views.md` — playlist/kiosk rotations where every view
+  must stand alone.
 - `references/proofing.md` — rasterizing at true fidelity, inspection checklists.
 
 Read a profile **completely** before designing for its surface. The profiles are
