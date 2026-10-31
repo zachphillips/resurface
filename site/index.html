@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>ReSurface — Responsive beyond the viewport</title>
-<meta name="description" content="ReSurface is an open-source skill framework that lets agents re-design anything — form and content — for any surface: paper, e-ink, thermal printers, index cards, slides. This page is the demo.">
+<meta name="description" content="ReSurface is an open-source set of instructions for AI coding agents. It takes a document or dashboard and remakes it for paper, e-ink, receipt printers, index cards or slides, changing the wording as well as the layout. This page is the demo: pick a surface at the bottom.">
 <meta property="og:title" content="ReSurface — Responsive beyond the viewport">
-<meta property="og:description" content="Breakpoints move boxes. ReSurface re-decides design and content for any surface you can measure — then proofs at true device fidelity and delivers. Open source, MIT.">
+<meta property="og:description" content="A media query only shrinks the layout. ReSurface also rewrites the content for paper, e-ink, receipt printers, index cards and slides, checks it at the size the device will actually print or show, and sends it there. Open source, MIT.">
 <meta property="og:type" content="website">
 <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -700,16 +700,16 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
   <section class="sec" id="hero">
     <div class="v-full" data-only="screen letter">
       <div>
-        <p class="kicker">A skill framework for agents · open source</p>
+        <p class="kicker">Open-source instructions for AI coding agents</p>
         <h1 class="display">Responsive beyond <span class="vp">the viewport.</span></h1>
-        <p class="lede">Breakpoints move boxes. <strong>ReSurface re-decides the design <em>and</em> the content</strong> — for letter paper, index cards, receipt printers, e-ink panels, slides, and any surface you can measure. Then it proofs the result at true device fidelity and delivers it there.</p>
+        <p class="lede">Breakpoints move boxes around. <strong>ReSurface redoes the layout <em>and</em> rewrites the content</strong> for letter paper, index cards, receipt printers, e-ink panels and slides. Then it checks the result at the exact size and resolution of that device before sending it there.</p>
         <div class="ctas">
           <a class="btn primary" href="https://github.com/zachphillips/resurface"><span class="ico">★</span> View on GitHub</a>
           <a class="btn ghost" href="#install">Install the skill</a>
         </div>
         <p class="demo-hint">THIS PAGE IS THE DEMO — CHOOSE A SURFACE BELOW</p>
         <div class="margin-note" data-only="letter">
-          ✎ &nbsp;NOTE — you are reading the <b>letter rendition</b>: serif text face, fills traded for hairlines (ink costs money), links printed in full, margins left writable. On purpose.
+          ✎ &nbsp;NOTE — you are reading the <b>letter rendition</b>: a serif typeface for reading, thin lines instead of solid blocks of color to save ink, links printed out in full, and margins left wide enough to write in.
         </div>
       </div>
       <div class="trio" aria-label="The same daily brief rendered for three surfaces">
@@ -752,21 +752,21 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
 
     <div class="v-strip" data-only="receipt">
       <div class="center" style="padding:8px 0 2px">ONE SOURCE → MANY SURFACES</div>
-      <div class="center">BREAKPOINTS MOVE BOXES.<br>THIS RE-DECIDES THE CONTENT.</div>
+      <div class="center">BREAKPOINTS SHRINK THE LAYOUT.<br>THIS ALSO REWRITES THE CONTENT.</div>
     </div>
 
     <div class="v-card" data-only="card">
       <div class="ch">ReSurface <i>CARD 1/8 · 3×5 IN</i></div>
       <div class="cb">
-        <p class="big">One source. Many surfaces. Always useful.</p>
-        <p>Agents re-decide design + content per surface. This site: 8 cards, condensed face, one idea each.</p>
+        <p class="big">The same page, remade for each surface.</p>
+        <p>An agent redoes layout and wording for each one. Here: 8 cards, condensed type, one idea each.</p>
       </div>
     </div>
 
     <div class="v-slide" data-only="slide">
       <span class="sl-kick">ReSurface — open source</span><span class="sl-pg">01 / 08</span>
       <div class="sl-main"><h2>Responsive beyond <em>the viewport.</em></h2></div>
-      <div class="sl-notes"><b>NOTES</b> Open cold, one line, pause. Everything you'd normally cram on this slide moved down here — into presenter notes — which is exactly the decision ReSurface makes when a document becomes a deck.</div>
+      <div class="sl-notes"><b>NOTES</b> Start with the title and nothing else. The detail that would normally be crammed onto the slide is in these presenter notes instead. That is the kind of change ReSurface makes when a document becomes a deck.</div>
     </div>
   </section>
 
@@ -776,7 +776,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
       <div class="sec-head">
         <span class="sec-num">01</span>
         <h2 class="sec-title">What breakpoints can’t do</h2>
-        <span class="sec-meta">FORM ∥ CONTENT</span>
+        <span class="sec-meta">LAYOUT AND WORDING</span>
       </div>
       <div class="vs">
         <div class="panel dull">
@@ -789,7 +789,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
 
 <span class="cm">/* all seven days are still here.
    they're just smaller. and sadder. */</span></pre>
-          <div class="pf">Layout reflows. Content survives untouched — whether it deserves to or not.</div>
+          <div class="pf">The layout adapts, but every word stays, even on a panel too small to read it.</div>
         </div>
         <div class="panel live">
           <div class="ph"><span>RESURFACE</span><span>decision record</span></div>
@@ -798,9 +798,9 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
 · show today + tomorrow, not the week   <span class="ok">[asked: OK]</span>
 · tentative events → outline boxes
   <span class="cm">(gray does not exist on this panel)</span>
-· full week escapes via QR, bottom-right
+· full week behind a QR code, bottom-right
 · type ≥ 18px — read from across the kitchen</pre>
-          <div class="pf">Content is re-edited for the surface. On purpose. On the record.</div>
+          <div class="pf">The content is edited for that surface, and the changes are written in the decision record above.</div>
         </div>
       </div>
       <div class="never">
@@ -820,7 +820,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
       <div class="sline"><span>SHORTEN A RECIPE STEP</span><em>✓</em></div>
       <div class="sline"><span>CHECKBOX → STRIKETHROUGH</span><em>✓</em></div>
       <div class="sline"><span>8 REQUIREMENTS → 5 BETTER</span><em>✓</em></div>
-      <div class="sline q">YOU ARE READING THE PROOF.</div>
+      <div class="sline q">THIS RECEIPT IS AN EXAMPLE.</div>
     </div>
 
     <div class="v-card" data-only="card">
@@ -829,14 +829,14 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
         <li><b>They can't</b> pick 2 of 7 days,</li>
         <li>shorten a step, strike a done task,</li>
         <li>or turn 8 requirements into 5.</li>
-        <li><b>ReSurface can.</b> On the record.</li>
+        <li><b>ReSurface can,</b> and writes it down.</li>
       </ul></div>
     </div>
 
     <div class="v-slide" data-only="slide">
       <span class="sl-kick">The problem</span><span class="sl-pg">02 / 08</span>
       <div class="sl-main"><h2>Breakpoints move boxes. They can’t decide <em>what matters.</em></h2></div>
-      <div class="sl-notes"><b>NOTES</b> A media query keeps all seven days of the calendar and shrinks them. An editor shows two days and a QR code. Form decisions and content decisions are the same craft — agents can finally do both.</div>
+      <div class="sl-notes"><b>NOTES</b> A media query keeps all seven days of the calendar and shrinks them. An editor shows two days and a QR code. Choosing what to show is editing, not CSS, and an agent can do it with the panel’s real size.</div>
     </div>
   </section>
 
@@ -845,16 +845,16 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
     <div class="v-full" data-only="screen letter">
       <div class="sec-head">
         <span class="sec-num">02</span>
-        <h2 class="sec-title">Six steps, each on the record</h2>
-        <span class="sec-meta">.resurface/ — durable artifacts</span>
+        <h2 class="sec-title">How it works, in six steps</h2>
+        <span class="sec-meta">each step writes a file</span>
       </div>
       <div class="steps">
-        <div class="step"><div class="n">1</div><h4>Capture</h4><p>Why does this exist? Who uses it, where, with what in their hands? Content gets survival tiers: T1 must live, T2 can condense, T3 can drop.</p><span class="art">.resurface/source.md</span></div>
-        <div class="step"><div class="n">2</div><h4>Choose</h4><p>You name a surface. The agent loads its profile: real dimensions, color depth, refresh, ink economy, failure modes — hardware truth, not vibes.</p><span class="art">surfaces/*.md</span></div>
-        <div class="step"><div class="n">3</div><h4>Decide</h4><p>A written decision record: layout in real units, rewrites shown, idioms chosen. Low-confidence calls come back as multiple choice — once, then recorded forever.</p><span class="art">.resurface/decisions/&lt;surface&gt;.md</span></div>
-        <div class="step"><div class="n">4</div><h4>Render</h4><p>A surface-native artifact: print-CSS HTML, 1-bit raster, ESC/POS bytes, fixed-pixel PNG, slides with notes.</p><span class="art">.resurface/out/&lt;surface&gt;/</span></div>
-        <div class="step"><div class="n">5</div><h4>Proof</h4><p>Rasterized at the device’s true pixels and bit depth — 384px wide and 1-bit if that’s what the printer sees — then inspected. Nothing ships on “should work.”</p><span class="art">proof.png · inspected</span></div>
-        <div class="step"><div class="n">6</div><h4>Deliver</h4><p>CUPS, ESC/POS, TRMNL, OpenEPaperLink, PDF, kiosk. Add cron: your day is a sticker on the printer before you’re awake.</p><span class="art">connectors/*.md</span></div>
+        <div class="step"><div class="n">1</div><h4>Capture</h4><p>Why does this exist? Who uses it, where, with what in their hands? Then sort the contents into three groups: T1 must stay, T2 can be shortened, T3 can be dropped.</p><span class="art">.resurface/source.md</span></div>
+        <div class="step"><div class="n">2</div><h4>Choose</h4><p>You name a surface. The agent loads its profile: its real dimensions, how many colors it can show, how fast it refreshes, what ink costs, and how it tends to fail. Measured numbers, not guesses.</p><span class="art">surfaces/*.md</span></div>
+        <div class="step"><div class="n">3</div><h4>Decide</h4><p>A written decision record: layout in millimeters, inches or pixels, the rewrites it made, and the conventions it picked for that surface. If it is unsure about a choice, it asks you once, as a short multiple-choice question, and saves your answer.</p><span class="art">.resurface/decisions/&lt;surface&gt;.md</span></div>
+        <div class="step"><div class="n">4</div><h4>Render</h4><p>A file made for that surface: print-ready HTML, a black-and-white image at the printer’s exact width, ESC/POS for a receipt printer, a fixed-size PNG, or slides with presenter notes.</p><span class="art">.resurface/out/&lt;surface&gt;/</span></div>
+        <div class="step"><div class="n">5</div><h4>Proof</h4><p>It renders the file at the device’s actual pixel size (384 pixels wide and black-and-white only, if that is what the printer can do) and looks at the result before anything is sent.</p><span class="art">proof.png · inspected</span></div>
+        <div class="step"><div class="n">6</div><h4>Deliver</h4><p>Sends it by CUPS, ESC/POS, TRMNL, OpenEPaperLink, PDF or a kiosk browser. Run it on a schedule and your day can be printed on a label before you wake up.</p><span class="art">connectors/*.md</span></div>
       </div>
     </div>
 
@@ -871,11 +871,11 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
     <div class="v-card" data-only="card">
       <div class="ch">The protocol <i>CARD 3/8</i></div>
       <div class="cb"><ul>
-        <li>1 <b>Capture</b> intent + tiers <span class="mono">source.md</span></li>
+        <li>1 <b>Capture</b> purpose + T1/T2/T3 <span class="mono">source.md</span></li>
         <li>2 <b>Choose</b> a surface profile</li>
         <li>3 <b>Decide</b> — written record</li>
         <li>4 <b>Render</b> in real units</li>
-        <li>5 <b>Proof</b> at device fidelity</li>
+        <li>5 <b>Proof</b> at the device’s real size</li>
         <li>6 <b>Deliver</b> — print · push · cron</li>
       </ul></div>
     </div>
@@ -883,7 +883,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
     <div class="v-slide" data-only="slide">
       <span class="sl-kick">The protocol</span><span class="sl-pg">03 / 08</span>
       <div class="sl-main"><h2>Capture → Decide → <em>Proof</em> → Deliver.</h2></div>
-      <div class="sl-notes"><b>NOTES</b> Six steps; four worth saying aloud. The decision record is the contract — re-renders reuse it, and a question answered once is never asked again. Proofing means rasterizing at true device fidelity and actually looking.</div>
+      <div class="sl-notes"><b>NOTES</b> There are six steps. The decision record is the part to remember: later versions reuse it, so a question you answered once is not asked again. Proofing means rendering at the device’s real size and looking at it.</div>
     </div>
   </section>
 
@@ -893,40 +893,40 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
       <div class="sec-head">
         <span class="sec-num">03</span>
         <h2 class="sec-title">House rules</h2>
-        <span class="sec-meta">editorial judgment, codified</span>
+        <span class="sec-meta">the rules it follows</span>
       </div>
       <div class="rules-grid">
-        <div class="rule"><i>RULE 01</i><h4>Physical truth.</h4><p>Real units, from the profile, never from memory. A 58mm receipt is 384 dots. An index card is 3×5 inches. A “12pt glyph” across the kitchen is not 12pt.</p></div>
-        <div class="rule"><i>RULE 02</i><h4>Use-context beats screen size.</h4><p>The guitarist can’t turn a page mid-song. The cook’s hands are wet. Context decides; geometry only constrains.</p></div>
-        <div class="rule"><i>RULE 03</i><h4>Never truncate. Re-edit.</h4><p>An ellipsis is a failure. Rewriting eight requirements as five tighter ones, in the author’s voice, is the job.</p></div>
-        <div class="rule"><i>RULE 04</i><h4>Spend the whole budget.</h4><p>Whitespace on a printed lyric sheet is wasted fidelity — scale up until the content fits the surface, not just on it.</p></div>
-        <div class="rule"><i>RULE 05</i><h4>Translate idioms.</h4><p>Checkboxes on retina; strikethroughs on thermal; outline boxes where gray doesn’t exist; QR codes where links can’t live.</p></div>
-        <div class="rule"><i>RULE 06</i><h4>Proof like it’s hardware.</h4><p>Rasterize at true pixels and bit depth. Look at it. Fix it. Print one before printing twenty.</p></div>
+        <div class="rule"><i>RULE 01</i><h4>Use real measurements.</h4><p>Take sizes from the surface profile, not from memory. A 58mm receipt is 384 dots wide. An index card is 3×5 inches. Text meant to be read across a kitchen needs to be far bigger than 12pt.</p></div>
+        <div class="rule"><i>RULE 02</i><h4>Where it will be used matters most.</h4><p>The guitarist can’t turn a page mid-song. The cook’s hands are wet. Size tells you what fits. It does not tell you what to put there.</p></div>
+        <div class="rule"><i>RULE 03</i><h4>Never truncate. Re-edit.</h4><p>Cutting text off with an ellipsis is not editing. Rewriting eight requirements as five clearer ones, in the author’s voice, is the job here.</p></div>
+        <div class="rule"><i>RULE 04</i><h4>Use the space you have.</h4><p>Blank space on a printed lyric sheet could have been bigger type. Make the content as large as the page allows.</p></div>
+        <div class="rule"><i>RULE 05</i><h4>Use what works on that surface.</h4><p>Checkboxes work on a sharp screen. On a receipt printer a strikethrough reads better, an outline box works where there is no gray, and a QR code stands in for a link you cannot tap.</p></div>
+        <div class="rule"><i>RULE 06</i><h4>Check it as the device will show it.</h4><p>Render it at the device’s actual pixels and colors, look at it, and fix what is wrong. Print one copy before you print twenty.</p></div>
       </div>
     </div>
 
     <div class="v-strip" data-only="receipt">
       <div class="band">HOUSE RULES</div>
       <div class="sline"><span>NEVER TRUNCATE — RE-EDIT</span></div>
-      <div class="sline"><span>SPEND THE WHOLE BUDGET</span></div>
-      <div class="sline"><span>PROOF LIKE IT'S HARDWARE</span></div>
+      <div class="sline"><span>USE THE SPACE YOU HAVE</span></div>
+      <div class="sline"><span>CHECK AT REAL SIZE FIRST</span></div>
     </div>
 
     <div class="v-card" data-only="card">
       <div class="ch">House rules <i>CARD 4/8</i></div>
       <div class="cb"><ul>
-        <li><b>Physical truth</b> — real units only.</li>
-        <li><b>Context beats geometry.</b></li>
+        <li><b>Real measurements</b> only.</li>
+        <li><b>Where it’s used</b> beats size.</li>
         <li><b>Never truncate</b> — re-edit.</li>
-        <li><b>Translate idioms</b>, don't copy.</li>
-        <li><b>Proof</b> at device fidelity.</li>
+        <li><b>Use what works</b> there.</li>
+        <li><b>Proof</b> at real size.</li>
       </ul></div>
     </div>
 
     <div class="v-slide" data-only="slide">
       <span class="sl-kick">House rules</span><span class="sl-pg">04 / 08</span>
       <div class="sl-main"><h2>Never truncate. <em>Re-edit.</em></h2></div>
-      <div class="sl-notes"><b>NOTES</b> The framework's hardest rule. Dumb truncation is what deterministic pipelines do; an editor rewrites. Eight requirements become five better ones — and the rewrite is shown in the decision record, where the author can veto it.</div>
+      <div class="sl-notes"><b>NOTES</b> This is the hardest rule to follow. Cutting text off mid-sentence is easy. Rewriting eight requirements as five clearer ones takes judgment, and the rewrite goes in the decision record so the author can reject it.</div>
     </div>
   </section>
 
@@ -936,25 +936,25 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
       <div class="sec-head">
         <span class="sec-num">04</span>
         <h2 class="sec-title">The surface library</h2>
-        <span class="sec-meta">13 profiles · write your own</span>
+        <span class="sec-meta">14 profiles · write your own</span>
       </div>
       <div class="stable">
         <div class="srow head"><span>SURFACE</span><span>SPEC</span><span class="hidesm">COLOR</span><span class="hidesm">CAPABILITY</span><span>WHAT CHANGES</span></div>
-        <div class="srow"><span class="sn">Letter / A4<small>paper-letter</small></span><span class="mono">8.5×11IN · 210×297MM</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">WRITABLE</span><span class="cap">INK $</span></span><span class="what">fills → hairlines, margins stay writable, links printed in full</span></div>
-        <div class="srow"><span class="sn">Index card<small>paper-index-card</small></span><span class="mono">3×5IN · 4×6IN</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">WRITABLE</span><span class="cap">DECK</span></span><span class="what">condensed face, one unit of meaning per card, never front/back</span></div>
-        <div class="srow"><span class="sn">Brochure<small>paper-brochure-half-fold</small></span><span class="mono">8.5×11 → 4 PANELS</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">FOLD</span></span><span class="what">imposition-aware: panel order ≠ page order, cover earns its panel</span></div>
-        <div class="srow"><span class="sn">Thermal receipt<small>thermal-receipt</small></span><span class="mono">58/80MM · 384/576 DOTS</span><span class="hidesm"><span class="cap mono1">1-BIT</span></span><span class="hidesm"><span class="cap">FREE INK</span><span class="cap">TEAR</span></span><span class="what">strikethroughs for done, inverted bands, tear-aware segments</span></div>
-        <div class="srow"><span class="sn">Label sticker<small>thermal-label-4x6</small></span><span class="mono">4×6IN · 203 DPI</span><span class="hidesm"><span class="cap mono1">1-BIT</span></span><span class="hidesm"><span class="cap">STICKY</span><span class="cap">QR</span></span><span class="what">glanceable hierarchy; everything secondary escapes via QR</span></div>
-        <div class="srow"><span class="sn">Boarding pass<small>boarding-pass</small></span><span class="mono">~8×3.25IN · 2 PERFS</span><span class="hidesm"><span class="cap mono1">1-BIT</span></span><span class="hidesm"><span class="cap">STUB</span></span><span class="what">stubs survive separation — T1 lives on the stub</span></div>
-        <div class="srow"><span class="sn">E-ink small<small>eink-small</small></span><span class="mono">296×128 → 800×480</span><span class="hidesm"><span class="cap mono1">1-BIT/4-GRAY</span></span><span class="hidesm"><span class="cap">SLOW</span><span class="cap">STILL</span></span><span class="what">contrast-first, designed for stillness, today + tomorrow not the week</span></div>
-        <div class="srow"><span class="sn">E-ink large<small>eink-large</small></span><span class="mono">10.3–13.3IN · 16-GRAY</span><span class="hidesm"><span class="cap">16-GRAY</span></span><span class="hidesm"><span class="cap">WALL</span></span><span class="what">real typography rewarded; rooted Kindles welcome</span></div>
+        <div class="srow"><span class="sn">Letter / A4<small>paper-letter</small></span><span class="mono">8.5×11IN · 210×297MM</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">WRITABLE</span><span class="cap">INK $</span></span><span class="what">solid blocks become thin lines to save ink, margins left blank for notes, links printed in full</span></div>
+        <div class="srow"><span class="sn">Index card<small>paper-index-card</small></span><span class="mono">3×5IN · 4×6IN</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">WRITABLE</span><span class="cap">DECK</span></span><span class="what">narrow typeface, one idea per card, nothing split across front and back</span></div>
+        <div class="srow"><span class="sn">Brochure<small>paper-brochure-half-fold</small></span><span class="mono">8.5×11 → 4 PANELS</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">FOLD</span></span><span class="what">panels are laid out in the order they appear after folding, which is not page order</span></div>
+        <div class="srow"><span class="sn">Thermal receipt<small>thermal-receipt</small></span><span class="mono">58/80MM · 384/576 DOTS</span><span class="hidesm"><span class="cap mono1">1-BIT</span></span><span class="hidesm"><span class="cap">FREE INK</span><span class="cap">TEAR</span></span><span class="what">finished items get a line through them, headings print white on black, sections end where you can tear</span></div>
+        <div class="srow"><span class="sn">Label sticker<small>thermal-label-4x6</small></span><span class="mono">4×6IN · 203 DPI</span><span class="hidesm"><span class="cap mono1">1-BIT</span></span><span class="hidesm"><span class="cap">STICKY</span><span class="cap">QR</span></span><span class="what">one big headline you can read at arm’s length; the rest sits behind a QR code</span></div>
+        <div class="srow"><span class="sn">Boarding pass<small>boarding-pass</small></span><span class="mono">~8×3.25IN · 2 PERFS</span><span class="hidesm"><span class="cap mono1">1-BIT</span></span><span class="hidesm"><span class="cap">STUB</span></span><span class="what">the part you keep after tearing still has the essentials (T1) on it</span></div>
+        <div class="srow"><span class="sn">E-ink small<small>eink-small</small></span><span class="mono">296×128 → 800×480</span><span class="hidesm"><span class="cap mono1">1-BIT/4-GRAY</span></span><span class="hidesm"><span class="cap">SLOW</span><span class="cap">STILL</span></span><span class="what">high contrast, nothing that needs to move, today and tomorrow instead of the whole week</span></div>
+        <div class="srow"><span class="sn">E-ink large<small>eink-large</small></span><span class="mono">10.3–13.3IN · 16-GRAY</span><span class="hidesm"><span class="cap">16-GRAY</span></span><span class="hidesm"><span class="cap">WALL</span></span><span class="what">enough room for proper typesetting, including on large e-readers</span></div>
         <div class="srow"><span class="sn">Phone<small>screen-phone</small></span><span class="mono">360–430 CSS PX</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">TOUCH</span><span class="cap">TTS</span></span><span class="what">cards over scroll, tap-to-expand, listen instead of read</span></div>
-        <div class="srow"><span class="sn">TV / wall<small>screen-tv</small></span><span class="mono">1080P+ @ 3–5M</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">AMBIENT</span></span><span class="what">type ≥32px, overscan-safe, glanceable ambient density</span></div>
-        <div class="srow"><span class="sn">Desktop<small>screen-desktop</small></span><span class="mono">1920×1080+</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">POINTER</span></span><span class="what">usually the source — the riches every other surface re-budgets</span></div>
+        <div class="srow"><span class="sn">TV / wall<small>screen-tv</small></span><span class="mono">1080P+ @ 3–5M</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">AMBIENT</span></span><span class="what">type at least 32px, kept away from the screen edges, readable from the sofa</span></div>
+        <div class="srow"><span class="sn">Desktop<small>screen-desktop</small></span><span class="mono">1920×1080+</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">POINTER</span></span><span class="what">usually where the original starts, with more space than anywhere else</span></div>
         <div class="srow"><span class="sn">Slide deck<small>slide-16x9</small></span><span class="mono">16:9 · 1920×1080</span><span class="hidesm"><span class="cap">FULL</span></span><span class="hidesm"><span class="cap">NOTES</span></span><span class="what">paragraphs move to presenter notes; one idea per slide</span></div>
-        <div class="srow"><span class="sn">Terminal<small>terminal-cli</small></span><span class="mono">80×24 · MONO GRID</span><span class="hidesm"><span class="cap mono1">ANSI</span></span><span class="hidesm"><span class="cap">BOX-DRAW</span></span><span class="what">the original constrained surface — box rules and block sparklines</span></div>
+        <div class="srow"><span class="sn">Terminal<small>terminal-cli</small></span><span class="mono">80×24 · MONO GRID</span><span class="hidesm"><span class="cap mono1">ANSI</span></span><span class="hidesm"><span class="cap">BOX-DRAW</span></span><span class="what">text only, 80 by 24: box-drawing characters and block graphs</span></div>
       </div>
-      <p class="stable-note">7 surfaces are skinned into this page · all 13 ship as profiles · add yours with <a href="https://github.com/zachphillips/resurface/blob/main/skills/resurface/surfaces/_schema.md">surfaces/_schema.md</a> — measure first, design second.</p>
+      <p class="stable-note">This page can switch between 7 of these surfaces (use the bar at the bottom). The repo has 14 profiles, including TRMNL e-ink, which is not in the table above. Add your own with <a href="https://github.com/zachphillips/resurface/blob/main/skills/resurface/surfaces/_schema.md">surfaces/_schema.md</a>. Measure the surface before you design for it.</p>
     </div>
 
     <div class="v-strip" data-only="receipt">
@@ -970,7 +970,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
     </div>
 
     <div class="v-card" data-only="card">
-      <div class="ch">13 surfaces shipped <i>CARD 5/8</i></div>
+      <div class="ch">14 surfaces in the repo <i>CARD 5/8</i></div>
       <div class="cb"><ul>
         <li>Letter · A4 · index card · brochure</li>
         <li>receipt · label · boarding pass</li>
@@ -982,8 +982,8 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
 
     <div class="v-slide" data-only="slide">
       <span class="sl-kick">The library</span><span class="sl-pg">05 / 08</span>
-      <div class="sl-main"><h2>A surface is a <em>budget</em>: area, color, attention.</h2></div>
-      <div class="sl-notes"><b>NOTES</b> Thirteen profiles ship: paper, cards, brochure, thermal, labels, boarding passes, e-ink, phone, TV, desktop, slides, terminal. Each one is hardware truth — dots, millimeters, failure modes — that an agent can compute layout from.</div>
+      <div class="sl-main"><h2>Every surface limits <em>space, color</em> and attention.</h2></div>
+      <div class="sl-notes"><b>NOTES</b> Fourteen profiles are in the repo, including paper, thermal, e-ink (and TRMNL), slides and terminal. Each lists measured facts in dots and millimeters, plus how that surface tends to fail.</div>
     </div>
   </section>
 
@@ -1007,7 +1007,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
             </div>
             <div class="m-card2"><div class="ln" style="width:70%"></div><div class="ln"></div><div class="ln" style="width:85%"></div><i>1/2</i></div>
           </div>
-          <div class="meta"><i>PAPER-LETTER · PAPER-INDEX-CARD</i><h4>Lyrics → one page, then cards</h4><p>Type maximized until the song fills one side — the guitarist can’t turn pages. The repertoire re-segments to 3×5 cards: two cards side by side, never front/back.</p></div>
+          <div class="meta"><i>PAPER-LETTER · PAPER-INDEX-CARD</i><h4>Lyrics → one page, then cards</h4><p>The type is made as large as it can be while the whole song still fits on one side, because the guitarist cannot turn a page mid-song. On cards, a song takes two cards side by side, never front and back.</p></div>
         </a>
         <a class="ex" href="https://github.com/zachphillips/resurface/tree/main/examples/agent-dashboard-to-receipt">
           <div class="stage">
@@ -1022,7 +1022,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
               <svg class="qr"><use href="#qr29"/></svg>
             </div>
           </div>
-          <div class="meta"><i>THERMAL-RECEIPT · 384 DOTS · 1-BIT</i><h4>Dashboard → thermal strip</h4><p>Gray “proposed next” can’t exist in 1-bit: it becomes indent + “?”. Checked boxes smear at 203 DPI: they become thin strikethroughs. A heavy rule splits done from next.</p></div>
+          <div class="meta"><i>THERMAL-RECEIPT · 384 DOTS · 1-BIT</i><h4>Dashboard → thermal strip</h4><p>The dashboard shows suggested tasks in gray, but a receipt printer has no gray, so they are indented with a “?”. Tiny checkboxes smear at this resolution, so finished tasks get a line through them instead. A thick line separates done from next.</p></div>
         </a>
         <a class="ex" href="https://github.com/zachphillips/resurface/tree/main/examples/recipe-to-fridge-eink">
           <div class="stage">
@@ -1033,7 +1033,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
               </div>
             </div>
           </div>
-          <div class="meta"><i>EINK-SMALL · 648×480 · 1-BIT</i><h4>Recipe → fridge e-ink</h4><p>Prose steps rewritten to eight glanceable imperatives, sized for wet hands at 1.5 meters. Ingredients run down the right edge — where a cook’s eye actually goes.</p></div>
+          <div class="meta"><i>EINK-SMALL · 648×480 · 1-BIT</i><h4>Recipe → fridge e-ink</h4><p>Long steps are rewritten as eight short instructions big enough to read from 1.5 meters with wet hands. Ingredients run down the right-hand side.</p></div>
         </a>
       </div>
     </div>
@@ -1043,13 +1043,13 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
       <div class="sline done"><span>LYRICS → LETTER + CARDS</span></div>
       <div class="sline done"><span>DASHBOARD → THIS STRIP</span></div>
       <div class="sline done"><span>RECIPE → FRIDGE E-INK</span></div>
-      <div class="sline q">STRIKE = SHIPPED. THE IDIOM WORKS.</div>
+      <div class="sline q">A LINE THROUGH IT MEANS DONE.</div>
     </div>
 
     <div class="v-card" data-only="card">
       <div class="ch">Worked examples <i>CARD 6/8</i></div>
       <div class="cb"><ul>
-        <li><b>Lyrics</b> → 1 page max-type + 3×5 cards</li>
+        <li><b>Lyrics</b> → one big-type page, then cards</li>
         <li><b>Dashboard</b> → 384-dot thermal strip</li>
         <li><b>Recipe</b> → 648×480 fridge e-ink</li>
         <li>each with its decision record →</li>
@@ -1060,7 +1060,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
     <div class="v-slide" data-only="slide">
       <span class="sl-kick">Proof</span><span class="sl-pg">06 / 08</span>
       <div class="sl-main"><h2>Lyrics, dashboards, recipes — <em>already resurfaced.</em></h2></div>
-      <div class="sl-notes"><b>NOTES</b> Three worked examples ship in the repo, each with source capture, decision record, and the rendered artifact. The decision records read like a designer's notebook — that's the deliverable, not a side effect.</div>
+      <div class="sl-notes"><b>NOTES</b> The repo has three worked examples. Each one includes the original, the decision record explaining what changed and why, and the finished file.</div>
     </div>
   </section>
 
@@ -1070,7 +1070,7 @@ html[data-surface="slide"] #topbar nav a.gh{background:#F4F1E9;color:#141413}
       <div class="sec-head">
         <span class="sec-num">06</span>
         <h2 class="sec-title">Install it, then talk to it</h2>
-        <span class="sec-meta">markdown all the way down</span>
+        <span class="sec-meta">the skill is plain markdown files</span>
       </div>
       <div class="wrap">
         <div>
@@ -1094,7 +1094,7 @@ cp -r resurface/skills/resurface .claude/skills/</pre>
           </div>
           <div class="cron-note">
             <b>THE MORNING STICKER</b>
-            “Every morning at 6:45, print my day on the label printer: schedule, three priorities, weather, one QR to the full calendar.” — a cron job, a connector, and a decision record. The sticker is on the printer before you’re awake.
+            “Every morning at 6:45, print my day on the label printer: schedule, three priorities, weather, one QR to the full calendar.” That takes a scheduled job, the label-printer connector and a decision record. The sticker is printed before you wake up.
           </div>
           <div class="cron-note" style="border-left-color:var(--tan)">
             <b>THEN JUST SAY THINGS LIKE</b>
@@ -1128,7 +1128,7 @@ cp -r resurface/skills/resurface .claude/skills/</pre>
     <div class="v-slide" data-only="slide">
       <span class="sl-kick">Get it</span><span class="sl-pg">07 / 08</span>
       <div class="sl-main"><h2 style="font-family:var(--mono);font-size:clamp(20px,3.6vw,52px);letter-spacing:0">/plugin install resurface</h2></div>
-      <div class="sl-notes"><b>NOTES</b> One plugin, thirteen surface profiles, six connectors, three worked examples. MIT licensed. The skill is markdown all the way down — judgment is the engine; code only lives at the edges, where pixels meet hardware.</div>
+      <div class="sl-notes"><b>NOTES</b> One plugin, fourteen surface profiles, six connectors and three worked examples, under an MIT license. The skill itself is markdown files. Code is only needed where a file has to be rendered or sent to a printer.</div>
     </div>
   </section>
 
@@ -1143,7 +1143,7 @@ cp -r resurface/skills/resurface .claude/skills/</pre>
         <div class="e-main">
           <div class="e-left">
             <h2>Responsive beyond the viewport.</h2>
-            <p>Agents re-decide design + content per surface, proof at device fidelity, then deliver.</p>
+            <p>An agent redoes layout and wording for each surface, checks it at real size, then sends it.</p>
             <div class="dith" aria-hidden="true"></div>
           </div>
           <div class="e-right">
@@ -1152,7 +1152,7 @@ cp -r resurface/skills/resurface .claude/skills/</pre>
               <li class="done">CAPTURE SOURCE</li>
               <li class="done">LOAD PROFILE 800×480</li>
               <li class="done">GRAY → OUTLINE/DITHER</li>
-              <li>T1 ONLY · WEEK VIA QR</li>
+              <li>ESSENTIALS · WEEK BY QR</li>
               <li>REFRESH: ON THE HOUR</li>
               <li>REPO: GITHUB → /RESURFACE</li>
             </ul>
@@ -1160,7 +1160,7 @@ cp -r resurface/skills/resurface .claude/skills/</pre>
         </div>
         <div class="e-bot">
           <span>LAST REFRESH 06:45 · NEXT 07:00</span>
-          <span>DESIGNED FOR STILLNESS — NOTHING HERE MOVES</span>
+          <span>NOTHING ON THIS PANEL MOVES</span>
         </div>
       </div>
     </div>
@@ -1168,17 +1168,17 @@ cp -r resurface/skills/resurface .claude/skills/</pre>
 
   <section id="label-digest" aria-label="Label sticker rendition">
     <div class="lb-band">RESURFACE</div>
-    <div class="lb-sub">SURFACE-AWARE PUBLISHING FOR AGENTS</div>
+    <div class="lb-sub">PAGES REMADE FOR EACH SURFACE</div>
     <div class="lb-specs">
       <div><span>RE-DECIDES</span><span>FORM + CONTENT</span></div>
       <div><span>SURFACES</span><span>PAPER · EINK · THERMAL · 16:9</span></div>
-      <div><span>PROOFS AT</span><span>TRUE DEVICE FIDELITY</span></div>
+      <div><span>PROOFS AT</span><span>THE DEVICE’S REAL SIZE</span></div>
       <div><span>LICENSE</span><span>MIT · OPEN SOURCE</span></div>
     </div>
     <div class="lb-qr"><svg viewBox="-2 -2 33 33"><use href="#qr29"/></svg></div>
     <div class="lb-scan">SCAN — EVERYTHING ELSE LIVES IN THE REPO</div>
     <div class="lb-bar" aria-hidden="true"></div>
-    <div class="lb-foot"><span>4×6 IN · 203 DPI · 1-BIT</span><span>T1 ONLY, RUTHLESSLY</span><span>v0.1.0</span></div>
+    <div class="lb-foot"><span>4×6 IN · 203 DPI · 1-BIT</span><span>ESSENTIALS ONLY</span><span>v0.1.0</span></div>
   </section>
 
   <!-- receipt chrome: bottom -->
@@ -1198,30 +1198,30 @@ cp -r resurface/skills/resurface .claude/skills/</pre>
   <!-- ============================ COLOPHON =========================== -->
   <footer class="sec" id="colophon">
     <div class="v-full" data-only="screen letter">
-      <p class="cl"><b>ReSurface</b> is MIT-licensed and built to be contributed to: surface profiles and connectors are the community layer. Rooted Kindles, e-paper price tags, dot-matrix printers, departure boards — if you can describe its physical truth, agents can design for it.</p>
+      <p class="cl"><b>ReSurface</b> is open source under the MIT license, and the easiest way to contribute is a new surface profile or connector. An old Kindle, an e-paper price tag, a dot-matrix printer, a departure board: if you can measure it and describe how it behaves, an agent can design for it.</p>
       <nav>
         <a href="https://github.com/zachphillips/resurface">GitHub ↗</a>
         <a href="https://github.com/zachphillips/resurface/tree/main/docs">Documentation</a>
         <a href="https://github.com/zachphillips/resurface/blob/main/CONTRIBUTING.md">Contributing</a>
         <a href="https://github.com/zachphillips/resurface/tree/main/examples">Examples</a>
       </nav>
-      <p class="fineprint">SET IN INSTRUMENT SERIF, ARCHIVO &amp; SPLINE SANS MONO · THE PAGE YOU ARE READING IS THE DEMO: ONE SOURCE, SEVEN SURFACES · PRINT DIALOG IS REAL — TRY ⌘P ON THE LETTER RENDITION</p>
+      <p class="fineprint">SET IN INSTRUMENT SERIF, ARCHIVO &amp; SPLINE SANS MONO · THIS PAGE IS THE DEMO: ONE PAGE, SEVEN SURFACES · TRY PRINTING IT (⌘P) WHILE THE LETTER VERSION IS SELECTED</p>
     </div>
 
     <div class="v-card" data-only="card">
       <div class="ch">Colophon <i>CARD 8/8</i></div>
       <div class="cb"><ul>
         <li>MIT · open source</li>
-        <li>surfaces + connectors = community</li>
+        <li>new surfaces + connectors welcome</li>
         <li><span class="mono">github.com/zachphillips/resurface</span></li>
-        <li><b>The meaning survives the move.</b></li>
+        <li><b>Start with the examples in the repo.</b></li>
       </ul></div>
     </div>
 
     <div class="v-slide" data-only="slide">
       <span class="sl-kick">Close</span><span class="sl-pg">08 / 08</span>
-      <div class="sl-main"><h2>The meaning <em>survives the move.</em></h2></div>
-      <div class="sl-notes"><b>NOTES</b> That's the prime directive — not the pixels, not the word count. github.com/zachphillips/resurface. Thank you.</div>
+      <div class="sl-main"><h2>Remake it for <em>where it will be read.</em></h2></div>
+      <div class="sl-notes"><b>NOTES</b> Keep the meaning, even if the layout, the wording and the word count all change. github.com/zachphillips/resurface. Thank you.</div>
     </div>
   </footer>
 
@@ -1232,7 +1232,7 @@ cp -r resurface/skills/resurface .claude/skills/</pre>
   <ul id="record-body"></ul>
 </aside>
 
-<nav id="chooser" aria-label="Surface chooser — reskins this entire page">
+<nav id="chooser" aria-label="Surface chooser: shows this page remade for each surface">
   <span class="dock-label">SURFACE</span>
   <button class="surf" data-mode="screen" aria-pressed="true">
     <span class="key">1</span>
@@ -1281,55 +1281,55 @@ cp -r resurface/skills/resurface .claude/skills/</pre>
   const RECORDS = {
     screen: [
       ['spec','CANVAS 1920×1080+ · FULL COLOR · POINTER'],
-      ['','budget: rich everywhere — spend on depth'],
-      ['','triage: nothing dropped (T1+T2+T3)'],
-      ['','type: display serif + grotesque + mono specs'],
-      ['','idioms: hover, density, crop marks'],
+      ['','plenty of space and color: show everything'],
+      ['','nothing dropped (T1+T2+T3)'],
+      ['','type: serif headings, sans text, mono labels'],
+      ['','can use hover and crop marks'],
     ],
     letter: [
       ['spec','CANVAS 8.5×11 IN · INK COSTLY · WRITABLE'],
-      ['','fills → hairlines (ink economy)'],
+      ['','solid blocks → thin lines (saves ink)'],
       ['','body → text serif at 17px/1.6'],
       ['','links → printed in full, no tap targets'],
       ['','margins left writable ✎ on purpose'],
-      ['','triage: T1+T2 · T3 stays online'],
+      ['','keeps T1+T2 · T3 stays online'],
     ],
     card: [
       ['spec','CANVAS 3×5 IN × 8 CARDS · WRITABLE'],
       ['','one idea per card, never mid-thought'],
-      ['','face → condensed grotesque (wdth 66)'],
-      ['','sequence is information: n/8 on every card'],
-      ['','ruled stock: red head rule, blue feints'],
-      ['','triage: T1 + tightened T2'],
+      ['','type → condensed, to fit more per line'],
+      ['','cards numbered n/8 so the order is clear'],
+      ['','ruled cards: red top line, blue lines'],
+      ['','keeps T1 + shortened T2'],
     ],
     receipt: [
       ['spec','CANVAS 384 DOTS · 58MM · 1-BIT · FREE INK'],
       ['','gray → indent + “?” (gray doesn’t exist)'],
       ['','checkbox → thin strikethrough'],
-      ['','sections → inverted bands + tear segments'],
+      ['','headings → white on black; tear between sections'],
       ['','overflow → QR (it scans — try it)'],
-      ['','triage: T1 only'],
+      ['','essentials (T1) only'],
     ],
     label: [
       ['spec','CANVAS 4×6 IN · 203 DPI · 1-BIT · ADHESIVE'],
-      ['','one sticker = the whole pitch'],
-      ['','headline ≥ glance size at arm’s length'],
+      ['','one sticker has to say it all'],
+      ['','headline readable at arm’s length'],
       ['','everything secondary → QR'],
-      ['','triage: T1, ruthlessly'],
+      ['','essentials (T1) only'],
     ],
     eink: [
       ['spec','CANVAS 800×480 · 7.5″ EPD · 1-BIT · SLOW'],
       ['','no grays: done → strikethrough, dither for tone'],
-      ['','refresh in seconds → designed for stillness'],
-      ['','contrast is survival: 3px rules minimum'],
-      ['','triage: T1 digest · the rest stays on desk'],
+      ['','refresh takes seconds → nothing moves'],
+      ['','lines at least 3px or they vanish'],
+      ['','essentials only · the rest stays on the desk'],
     ],
     slide: [
       ['spec','CANVAS 16:9 · BACK-OF-ROOM TEST'],
       ['','paragraphs → presenter notes (read them)'],
       ['','one idea per slide · type ≥ 24pt'],
       ['','count: 8 slides from 8 sections'],
-      ['','triage: T1 spoken · T2 in notes · T3 cut'],
+      ['','T1 on the slide · T2 in notes · T3 cut'],
     ],
   };
 
