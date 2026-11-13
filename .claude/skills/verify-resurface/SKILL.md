@@ -18,9 +18,7 @@ commands first. If absent, report the missing local tool; do not install a libra
 
 ```sh
 D=.claude/skills/verify-resurface
-RUN="$(pwd)/../resurface-proof"
-mkdir -p "$RUN"
-rm -f "$RUN/run.json"
+RUN=$(mktemp -d "$(pwd)/../resurface-proof.XXXXXX")
 setsid node "$D/serve.mjs" "$RUN" > "$RUN/server.log" 2>&1 & echo $! > "$RUN/server.pid"
 timeout 60 bash -c 'until test -f "$1/run.json"; do if ! kill -0 "$(cat "$1/server.pid")" 2>/dev/null; then cat "$1/server.log"; exit 1; fi; sleep 0.2; done' _ "$RUN"
 URL=$(node -p 'JSON.parse(require("fs").readFileSync(process.argv[1])).url' "$RUN/run.json")
