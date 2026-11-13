@@ -3,7 +3,7 @@
 From the repository root:
 
 ```sh
-npx wrangler@4.156.0 dev --local --ip 127.0.0.1 --port 21134
+npx wrangler@4.156.0 dev --local --ip 127.0.0.1 --port 21134 --inspector-port 21136
 ```
 
 `wrangler.jsonc` serves the existing `site/` directory through Cloudflare's local
