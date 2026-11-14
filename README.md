@@ -119,11 +119,14 @@ Worked end-to-end in [`examples/`](examples/):
 
 ## Releasing
 
-The live site is the existing Cloudflare Pages project `resurface`, published by
-direct upload to its production branch `main`. **Merging to main does not deploy.**
-The root Wrangler configuration is for local preview.
+The live site is the existing Cloudflare Pages project `resurface`. **Merges to
+main deploy automatically** after CI passes. The deploy job uploads `site/` to
+the project's production branch `main`, then verifies the production commit,
+files and existing response policies at <https://resurface.thekitchen.co>.
+Pull requests do not deploy. The root Wrangler configuration is for local preview.
 
-From a clean checkout of `main`, load the account's Pages credential and publish:
+For a manual fallback, use a clean checkout of `main`, load the account's Pages
+credential and publish:
 
 ```bash
 source ~/.agents/secrets/cloudflare.env

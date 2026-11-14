@@ -2,8 +2,27 @@
 
 Production is <https://resurface.thekitchen.co>, served by Cloudflare Pages project
 `resurface` in account `18c14eced1b91d7718e054b8767d5d46`. The production branch is
-`main`. The project has no Git integration: merging to main does not deploy.
-The root `wrangler.jsonc` describes local preview, not the production target.
+`main`. Merges to main deploy automatically through the repository's CI workflow.
+The project itself has no Git integration. The root `wrangler.jsonc` describes
+local preview, not the production target.
+
+## Automatic releases
+
+On pushes to `main`, the production deploy job waits for the existing CI check
+to pass, then runs the pinned Wrangler command below. Pull requests only run
+checks. Production uploads are serialized without cancelling an active upload.
+
+The job uses repository secret `CLOUDFLARE_PAGES_TOKEN` (Pages Read and Write on
+this account only) and repository variable `CLOUDFLARE_ACCOUNT_ID`. It first
+requires the existing project, production branch and custom domain, and records
+the previous deployment ID in the workflow summary. After uploading, it checks
+that production names the main commit, the home page, logo and robots file
+match `site/`, and project configuration, robots policy and stable response
+headers match the baseline. Failed checks fail the workflow.
+
+Use the commands below as the manual fallback, including rollback to the
+previous deployment ID recorded in the workflow summary. Do not run a manual
+upload while an automatic production upload is active.
 
 ## Capture before publishing
 
@@ -131,11 +150,3 @@ Check the API response's `success` field. Fetch the project and custom-domain
 responses again, require the previous canonical deployment, compare the home,
 logo and robots bodies to the saved **before** files, and recheck the policies.
 Pages keeps earlier deployments; no re-upload or DNS change is needed.
-
-## Optional automation
-
-A small GitHub Actions job on pushes to `main` could check out the repository
-and run the same pinned Pages command, then verify the custom domain. It needs
-a repository secret containing a Pages Read/Write token scoped to this account;
-the account ID can be a repository variable. Use deployment concurrency to avoid
-overlapping releases. Adding that secret requires a separate owner action.
