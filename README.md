@@ -117,6 +117,38 @@ Worked end-to-end in [`examples/`](examples/):
 - [Writing a connector](docs/writing-a-connector.md) — add your printer
 - [FAQ](docs/faq.md)
 
+## Releasing
+
+The live site is the existing Cloudflare Pages project `resurface`, published by
+direct upload to its production branch `main`. **Merging to main does not deploy.**
+The root Wrangler configuration is for local preview.
+
+From a clean checkout of `main`, load the account's Pages credential and publish:
+
+```bash
+source ~/.agents/secrets/cloudflare.env
+export CLOUDFLARE_API_TOKEN="$CLOUDFLARE_PAGES_TOKEN"
+export CLOUDFLARE_ACCOUNT_ID=18c14eced1b91d7718e054b8767d5d46
+npx --yes wrangler@4.156.0 pages deploy site --project-name resurface --branch main \
+  --commit-hash "$(git rev-parse HEAD)" --commit-dirty=false
+```
+
+**Before uploading**, record the active deployment and custom-domain responses.
+Afterward, require HTTP 200, compare the served home page, logo and robots file
+byte for byte with `site/`, and compare the response policies with the saved
+baseline. Keep the existing robots meta, `robots.txt` and `_headers` files.
+If verification is worse, roll back to the saved production deployment:
+
+```bash
+curl --fail-with-body --request POST \
+  --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+  "https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/resurface/deployments/$PREVIOUS_DEPLOYMENT_ID/rollback"
+```
+
+See [the release checklist](docs/releasing.md) for the exact capture and
+verification commands. Do not create another Pages project or change domains,
+DNS, access rules or response policies during a release.
+
 ## Contributing
 
 Surfaces and connectors are the community layer — rooted Kindles, e-paper price
