@@ -20,22 +20,40 @@ RELEASE_DIR="$(mktemp -d)"
 PAGES_API="https://api.cloudflare.com/client/v4/accounts/$CLOUDFLARE_ACCOUNT_ID/pages/projects/resurface"
 SITE_URL=https://resurface.thekitchen.co
 
-curl --fail-with-body --silent --show-error \
-  --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-  "$PAGES_API" > "$RELEASE_DIR/project-before.json"
-PREVIOUS_DEPLOYMENT_ID="$(python3 -c \
-  'import json,sys; d=json.load(open(sys.argv[1])); assert d["success"], d.get("errors"); print(d["result"]["canonical_deployment"]["id"])' \
-  "$RELEASE_DIR/project-before.json")"
-printf '%s\n' "$PREVIOUS_DEPLOYMENT_ID" > "$RELEASE_DIR/previous-deployment-id"
-
-for asset in index.html robots.txt assets/logo.svg; do
-  name="${asset//\//-}"
-  route="/$asset"; [ "$asset" != index.html ] || route=/
-  curl --fail-with-body --silent --show-error --compressed \
-    --dump-header "$RELEASE_DIR/$name.before.headers" \
-    --output "$RELEASE_DIR/$name.before" "$SITE_URL$route"
-done
+capture_release() {
+  rm -f "$RELEASE_DIR/baseline-ready" || return
+  curl --fail-with-body --silent --show-error \
+    --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+    "$PAGES_API" > "$RELEASE_DIR/project-before.json" || return
+  PREVIOUS_DEPLOYMENT_ID="$(python3 - "$RELEASE_DIR/project-before.json" <<'PY'
+import json, sys, uuid
+data = json.load(open(sys.argv[1]))
+assert data["success"], data.get("errors")
+project = data["result"]
+assert project["name"] == "resurface" and project["production_branch"] == "main"
+assert "resurface.thekitchen.co" in project["domains"]
+deployment = project["canonical_deployment"]
+assert deployment["environment"] == "production"
+assert deployment["latest_stage"]["status"] == "success"
+print(uuid.UUID(deployment["id"]))
+PY
+  )" || return
+  printf '%s\n' "$PREVIOUS_DEPLOYMENT_ID" > "$RELEASE_DIR/previous-deployment-id" || return
+  for asset in index.html robots.txt assets/logo.svg; do
+    name="${asset//\//-}"
+    route="/$asset"; [ "$asset" != index.html ] || route=/
+    status="$(curl --fail-with-body --silent --show-error --compressed \
+      --dump-header "$RELEASE_DIR/$name.before.headers" \
+      --output "$RELEASE_DIR/$name.before" --write-out '%{http_code}' "$SITE_URL$route")" || return
+    [ "$status" = 200 ] || { printf 'FAIL: baseline %s returned %s\n' "$route" "$status"; return 1; }
+  done
+  touch "$RELEASE_DIR/baseline-ready"
+}
+capture_release
 ```
+
+Stop if capture reports any failure. The upload below refuses to run without
+the completion marker. Keep this Bash shell open for verification and rollback.
 
 Check the saved project still names `resurface`, production branch `main` and
 the same custom domain. Keep the deployment ID and response files until the
@@ -55,24 +73,35 @@ Do not change the zone's existing robots rule, DNS, custom domain or access rule
 ## Publish and verify
 
 ```bash
-npx --yes wrangler@4.156.0 pages deploy site --project-name resurface --branch main \
-  --commit-hash "$(git rev-parse HEAD)" --commit-dirty=false
+verify_release() {
+  [ -f "$RELEASE_DIR/baseline-ready" ] && [ -n "$PREVIOUS_DEPLOYMENT_ID" ] || {
+    printf 'FAIL: complete baseline and rollback ID are required before upload\n'; return 1;
+  }
+  npx --yes wrangler@4.156.0 pages deploy site --project-name resurface --branch main \
+    --commit-hash "$(git rev-parse HEAD)" --commit-dirty=false || return
 
-for asset in index.html robots.txt assets/logo.svg; do
-  name="${asset//\//-}"
-  route="/$asset"; [ "$asset" != index.html ] || route=/
-  status="$(curl --fail-with-body --silent --show-error --compressed \
-    --dump-header "$RELEASE_DIR/$name.after.headers" \
-    --output "$RELEASE_DIR/$name.after" --write-out '%{http_code}' "$SITE_URL$route")"
-  [ "$status" = 200 ] || { printf 'FAIL: %s returned %s\n' "$route" "$status"; exit 1; }
-  cmp "site/$asset" "$RELEASE_DIR/$name.after" || exit 1
-done
-cmp "$RELEASE_DIR/robots.txt.before" "$RELEASE_DIR/robots.txt.after"
+  for asset in index.html robots.txt assets/logo.svg; do
+    name="${asset//\//-}"
+    route="/$asset"; [ "$asset" != index.html ] || route=/
+    status="$(curl --fail-with-body --silent --show-error --compressed \
+      --dump-header "$RELEASE_DIR/$name.after.headers" \
+      --output "$RELEASE_DIR/$name.after" --write-out '%{http_code}' "$SITE_URL$route")" || return
+    [ "$status" = 200 ] || { printf 'FAIL: %s returned %s\n' "$route" "$status"; return 1; }
+    cmp "site/$asset" "$RELEASE_DIR/$name.after" || return
+  done
+  cmp "$RELEASE_DIR/robots.txt.before" "$RELEASE_DIR/robots.txt.after" || return
 
-curl --fail-with-body --silent --show-error \
-  --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
-  "$PAGES_API" > "$RELEASE_DIR/project-after.json"
+  curl --fail-with-body --silent --show-error --compressed \
+    --header "Authorization: Bearer $CLOUDFLARE_API_TOKEN" \
+    "$PAGES_API" > "$RELEASE_DIR/project-after.json" || return
+}
+verify_release
+RELEASE_VERIFICATION_STATUS=$?
 ```
+
+The function returns failure without exiting the shell, so the rollback
+variables remain available. A nonzero `RELEASE_VERIFICATION_STATUS` requires
+investigation and rollback if the live site is worse; do not mark it verified.
 
 Require all comparisons to pass. Confirm the new `canonical_deployment` is a
 successful production deployment with the published main SHA, and project
