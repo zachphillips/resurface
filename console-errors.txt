@@ -1,0 +1,2 @@
+Live site pages (/, surface switches, phone, iPad, desktop): 0 console errors.
+Expected 404 document at /missing-hosting-check: Chrome logged "Failed to load resource: the server responded with a status of 404 ()".

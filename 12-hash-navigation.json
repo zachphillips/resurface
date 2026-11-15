@@ -1,0 +1,5 @@
+{
+  "hashStart": "screen",
+  "hashSameDoc": "screen",
+  "note": "same-document hash change is a known pre-existing app behavior, not this hosting change"
+}

@@ -1,0 +1,2 @@
+Live site pages: 0 failed requests.
+Expected missing path /missing-hosting-check: net::ERR_HTTP_RESPONSE_CODE_FAILURE (empty 404 body from Wrangler).

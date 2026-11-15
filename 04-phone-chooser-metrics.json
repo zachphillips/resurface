@@ -1,0 +1,72 @@
+{
+  "innerWidth": 390,
+  "innerHeight": 844,
+  "documentWidth": 456,
+  "documentHeight": 9889,
+  "chooser": {
+    "top": 755.609375,
+    "bottom": 828,
+    "left": 7.8046875,
+    "right": 382.1953125,
+    "width": 374.390625,
+    "height": 72.390625
+  },
+  "buttons": [
+    {
+      "mode": "screen",
+      "left": 14.8046875,
+      "right": 75.1953125,
+      "top": 762.609375,
+      "bottom": 821,
+      "inView": true
+    },
+    {
+      "mode": "letter",
+      "left": 79.1953125,
+      "right": 133.0546875,
+      "top": 762.609375,
+      "bottom": 821,
+      "inView": true
+    },
+    {
+      "mode": "card",
+      "left": 137.0546875,
+      "right": 190.9453125,
+      "top": 762.609375,
+      "bottom": 821,
+      "inView": true
+    },
+    {
+      "mode": "receipt",
+      "left": 194.9453125,
+      "right": 258.8359375,
+      "top": 762.609375,
+      "bottom": 821,
+      "inView": true
+    },
+    {
+      "mode": "label",
+      "left": 262.8359375,
+      "right": 314.2421875,
+      "top": 762.609375,
+      "bottom": 821,
+      "inView": true
+    },
+    {
+      "mode": "eink",
+      "left": 318.2421875,
+      "right": 367.6328125,
+      "top": 762.609375,
+      "bottom": 821,
+      "inView": true
+    },
+    {
+      "mode": "slide",
+      "left": 371.6328125,
+      "right": 420.4453125,
+      "top": 762.609375,
+      "bottom": 821,
+      "inView": false
+    }
+  ]
+}

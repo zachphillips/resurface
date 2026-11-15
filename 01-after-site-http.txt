@@ -1,0 +1,11 @@
+=== official verify/site-http.mjs ===
+200 /: matches source bytes
+200 /assets/logo.svg: matches source bytes
+307 /index.html -> /
+404 /missing-hosting-check
+404 /README.md
+404 /wrangler.jsonc
+404 /.assetsignore
+404 /.git/config
+404 /verify/site-hosting.mjs
+EXIT:0

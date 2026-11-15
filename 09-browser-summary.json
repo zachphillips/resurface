@@ -1,0 +1,18 @@
+{
+  "origin": "http://127.0.0.1:21134",
+  "wrangler": "4.156.0 --local --ip 127.0.0.1 --port 21134 --inspector-port 21136",
+  "siteHttp": "PASS (verify/site-http.mjs exit 0)",
+  "byteMatchHome": true,
+  "redirectIndexHtml": "307 -> /",
+  "workers_dev": false,
+  "preview_urls": false,
+  "phoneChooser": {
+    "visibleHeight": 844,
+    "chooserTop": 755.609375,
+    "chooserInViewVertically": true,
+    "documentWidth": 456,
+    "slideButtonClipped": true
+  },
+  "phoneReceiptClick": {"ok": true, "surface": "receipt"},
+  "hashSameDocument": "stays screen (pre-existing app behavior)"
+}

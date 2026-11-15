@@ -1,0 +1,62 @@
+
+=== extra HTTP probes ===
+--- HEAD / ---
+HTTP/1.1 200 OK
+Content-Type: text/html; charset=utf-8
+Cache-Control: public, max-age=0, must-revalidate
+ETag: "4d5c7a6f1260d171cc9112b9c46d4df6"
+CF-Cache-Status: HIT
+
+--- GET / twice (idempotent) ---
+first 200 88860
+second 200 88860
+--- GET /index.html no follow ---
+HTTP/1.1 307 Temporary Redirect
+Content-Length: 0
+Location: /
+
+--- GET /index.html follow ---
+followed 200 url_effective=http://127.0.0.1:21134/ size=88860
+--- trailing slash /assets/ ---
+GET /assets/ 404 size=0
+--- double slash ---
+GET // 307
+--- encoded index ---
+HTTP/1.1 307 Temporary Redirect
+Content-Length: 0
+Location: /
+
+GET /%69ndex.html 307
+--- traversal ---
+GET /../README.md 404
+GET /assets/../../README.md 404
+GET /site/index.html 404
+--- skills / examples / design ---
+GET /skills/resurface/SKILL.md 404
+GET /examples/ 404
+GET /design/ 404
+GET /docs/cloudflare-local-preview.md 404
+GET /package.json 404
+GET /.gitignore 404
+GET /site/.gitignore 404
+GET /.wrangler/hosting-check.log 404
+GET /verify/site-http.mjs 404
+--- long path ---
+GET /<4000 a> 404
+--- empty-ish ---
+GET /%00 404
+--- POST / ---
+POST / 405
+--- PUT /assets/logo.svg ---
+PUT /assets/logo.svg 405
+--- GET /.assetsignore ---
+GET /.assetsignore 404
+--- GET /robots.txt ---
+HTTP/1.1 404 Not Found
+Content-Length: 0
+
+robots body:
+
+--- wrangler.jsonc flags ---
+--- byte compare / vs site/index.html ---
+source 88860 response 88860 equal True
